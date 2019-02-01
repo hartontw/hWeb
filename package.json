@@ -1,12 +1,23 @@
 {
-    "name": "hweb",
-    "version": "0.0.1",
-    "description": "hartontw web site",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "Daniel Martínez Priego",
-    "license": "ISC",
-    "dependencies": {}
+  "name": "hweb",
+  "version": "0.0.1",
+  "description": "hartontw web site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Martínez Priego",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hartontw/hWeb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hartontw/hWeb/issues"
+  },
+  "homepage": "https://github.com/hartontw/hWeb#readme"
 }
