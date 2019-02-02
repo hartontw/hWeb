@@ -1,0 +1,20 @@
+{
+    "items": [{
+            "home": true,
+            "ref": "articles",
+            "name": "Artículos"
+        },
+        {
+            "ref": "projects",
+            "name": "Proyectos"
+        },
+        {
+            "ref": "apps",
+            "name": "Aplicaciones"
+        },
+        {
+            "ref": "contact",
+            "name": "Contact"
+        }
+    ]
+}

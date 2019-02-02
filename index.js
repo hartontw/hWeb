@@ -1,12 +1,8 @@
-const express = require('express');
-const app = express();
+/**
+ * @author Daniel Martínez Priego
+ * @backend private folder
+ * @frontend public folder
+ */
 
-const port = 3000;
-
-app.get('/', function(req, res) {
-    res.send('CONTENT');
-});
-
-app.listen(port, '0.0.0.0', function() {
-    console.log(`Listening port ${port}!`);
-});
+// Imports express app.
+require('./private/server.js');

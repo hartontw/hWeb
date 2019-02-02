@@ -1,0 +1,19 @@
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/admin">
+            <img src="https://avatars0.githubusercontent.com/u/21092213?s=460&v=4" width="30" height="30" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                {{#each items}}
+                    {{#unless this.hide}}
+                    <li class="nav-item{{#if_eq this.ref ../current}} active{{/if_eq}}">
+                        <a class="nav-link" href="/{{#unless this.home}}{{this.ref}}{{/unless}}">{{this.name}} {{#if_eq this.ref ../current}}<span class="sr-only">(current)</span>{{/if_eq}}</a>
+                    </li>
+                    {{/unless}}
+                {{/each}}
+            </ul>
+        </div>
+    </nav>
