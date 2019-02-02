@@ -82,8 +82,6 @@ app.post('/signin', (req, res) => {
     lastAttempt = now;
 });
 
-app.listen(env.PORT, '0.0.0.0', () => {
+module.exports = app.listen(env.PORT, '0.0.0.0', () => {
     console.log(`Listening port ${env.PORT}!`);
 });
-
-module.exports = app;

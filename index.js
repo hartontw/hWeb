@@ -4,5 +4,14 @@
  * @frontend public folder
  */
 
-// Imports express app.
-require('./private/server.js');
+const server = require('./private/server.js');
+
+process.on('SIGTERM', () => {
+    server.close(() => {
+        console.log('Process terminated')
+    })
+});
+
+process.on('SIGINT', () => {
+    console.log('Process terminated')
+});
