@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Daniel Harton | {{ name }} </title>
+    {{> styles }}
+    <style>    
+        body { 
+            -webkit-font-smoothing: antialiased; 
+            text-rendering: optimizeLegibility; 
+            font-family: 'Overpass', sans-serif; 
+            letter-spacing: 0px; 
+            font-size: 17px; 
+            font-weight: 400; 
+            line-height: 32px; 
+            background-color: #000000; 
+        }
+
+        .page-header { 
+            background: url(https://www.gannett-cdn.com/presto/2018/08/06/USAT/d7e9198a-b2fa-4ca6-b947-31c3751cc248-GettyImages-898660948.jpg?width=1080&quality=50)no-repeat; 
+            position: relative; 
+            background-size: cover; 
+        }
+
+        .page-caption { 
+            padding-top: 80px; 
+            padding-bottom: 100px; 
+        }
+
+        .page-title { 
+            font-size: 46px; 
+            line-height: 1; 
+            color: #fff; 
+            font-weight: 600; 
+            text-align: center;
+        }
+
+        .card-section { 
+            position: relative; 
+            bottom: 60px; 
+        }
+
+        #quill-viewer {                    
+            margin: 20px auto;
+            max-width: 90%;
+            height: 100%;
+            background-color: #FFFFFF;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+{{> navbar }}
+
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="page-caption">
+                        <h1 class="page-title">{{title}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-section">
+        <div id="quill-viewer"></div> 
+    </div>
+
+{{> scripts }}
+
+<script>
+    function quillGetHTML(inputDelta) {
+        var tempCont = document.getElementById("quill-viewer");
+        (new Quill(tempCont, {
+            modules: {
+                syntax: true, 
+                toolbar: false
+            },
+            readOnly: true,
+            theme: 'snow'
+        })).setContents(inputDelta);
+        return tempCont.getElementsByClassName("ql-editor")[0].innerHTML;
+    }
+
+    let delta = {{{content}}};
+
+    quillGetHTML(delta);
+</script>
+
+{{> footer }}
+
+</body>
+</html>

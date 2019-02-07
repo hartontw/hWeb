@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Daniel Harton | {{ name }} </title>
+  {{> styles }}
+  <style>
+    body>#main-container {
+      margin: 20px auto;
+      max-width: 80%;
+  }
+
+    #editor-container {
+        height: 512px;
+    }
+  </style>
+</head>
+
+<body>
+
+{{> navbar }}
+
+<div id="main-container">
+  <form method={{ method }} action="/article" id="articleForm">
+    <input type="hidden" id="content" name="content">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" name="title" placeholder="Enter title">
+    </div>
+    <div class="form-group">
+      <label for="tags">Tags</label>
+      <input type="text" class="form-control" id="tags" name="tags" placeholder="Enter tags separated by commas">
+    </div>      
+  </form>
+
+    <div id="standalone-container">
+      <div id="toolbar-container">
+        <span class="ql-formats">
+          <select class="ql-font"></select>
+          <select class="ql-size"></select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+          <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+          <select class="ql-color"></select>
+          <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-script" value="sub"></button>
+          <button class="ql-script" value="super"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-header" value="1"></button>
+          <button class="ql-header" value="2"></button>
+          <button class="ql-blockquote"></button>
+          <button class="ql-code-block"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+          <button class="ql-indent" value="-1"></button>
+          <button class="ql-indent" value="+1"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-direction" value="rtl"></button>
+          <select class="ql-align"></select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-link"></button>
+          <button class="ql-image"></button>
+          <button class="ql-video"></button>
+          <button class="ql-formula"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-clean"></button>
+        </span>
+      </div>
+      <div id="editor-container"></div>
+    </div>
+    </br>
+
+    <button class="btn btn-primary" id="submit">Create</button>
+
+</div>
+
+{{> scripts }}
+
+<script>
+  var quill = new Quill('#editor-container', {
+    modules: {
+        syntax: true, 
+        toolbar: '#toolbar-container'
+    },
+    readOnly: false,
+    theme: 'snow'
+});
+
+$("#submit").click(function (event) {
+    event.preventDefault();
+    $('#content').val(JSON.stringify(quill.getContents()));
+    $('#articleForm').submit();
+});
+
+
+ /* var title = $('#title').val();
+  var tags = $('#tags').val();
+  var content = JSON.stringify(quill.getContents());
+
+  var data = {
+    title: title,
+    tags: tags,
+    content: content
+  };*/
+
+</script>
+
+{{> footer }}
+
+</body>
+</html>

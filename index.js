@@ -4,14 +4,6 @@
  * @frontend public folder
  */
 
-const server = require('./private/server.js');
+process.env.ROOT = __dirname;
 
-process.on('SIGTERM', () => {
-    server.close(() => {
-        console.log('Process terminated')
-    })
-});
-
-process.on('SIGINT', () => {
-    console.log('Process terminated')
-});
+require('./private/server.js');

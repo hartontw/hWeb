@@ -28,7 +28,7 @@ echo "------------------------"
 echo ""
 echo "> Starting process..."
 echo ""
-pm2 start index.js
+PORT=3000 PASS="production" pm2 start index.js
 echo ""
 echo "------------------------"
 echo ""

@@ -1,8 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
 
-{{> header }}
+<head>
+    <meta charset="UTF-8">
+    <title>Daniel Harton | {{ name }} </title>
+    {{> styles }}
+</head>
+
+<body>
 
 {{> navbar}}
 
-<a href="/logout"><button type="button" class="btn btn-danger">Log out</button></a>
+<a href="/logout" class="btn btn-info btn-lg">
+    <span class="glyphicon glyphicon-log-out"></span> Log out
+</a>
+
+{{> scripts }}
 
 {{> footer }}
+
+</body>
+</html>

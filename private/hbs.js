@@ -14,7 +14,6 @@ hbs.registerHelper('if_eq', function() {
     return allEqual ? options.fn(this) : options.inverse(this);
 });
 
-
 hbs.getView = (name) => __dirname + `/views/${name}.hbs`;
 
 module.exports = hbs;

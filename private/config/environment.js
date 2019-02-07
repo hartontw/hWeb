@@ -5,6 +5,15 @@ process.env.PORT = process.env.PORT || 3000;
 process.env.PASS = process.env.PASS || "debug";
 
 ///////////
+// MONGO //
+///////////
+process.env.MONGO_USER = process.env.MONGO_USER || 'admin';
+process.env.MONGO_PASS = process.env.MONGO_PASS || 'debug';
+process.env.MONGO_IP = process.env.MONGO_IP || 'localhost';
+process.env.MONGO_PORT = process.env.MONGO_PORT || 27017;
+process.env.MONGO_DB = process.env.MONGO_DB || 'hWeb';
+
+///////////
 // TOKEN //
 ///////////
 process.env.TOKEN_USER = process.env.TOKEN_USER || 'admin';
