@@ -12,8 +12,12 @@
   }
 
     #editor-container {
-        height: 512px;
+      height: 512px;
     }
+
+    #editor-container .ql-video{
+      pointer-events: none;
+}
   </style>
 </head>
 
@@ -89,10 +93,13 @@
 </div>
 
 {{> scripts }}
-
+<script src="/assets/js/image-resize.min.js"></script>
+<script src="/assets/js/video-resize.min.js"></script>
 <script>
   var quill = new Quill('#editor-container', {
     modules: {
+        imageResize: {},
+        videoResize: {},
         syntax: true, 
         toolbar: '#toolbar-container'
     },
