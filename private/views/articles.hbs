@@ -5,13 +5,30 @@
     <meta charset="UTF-8">
     <title>Daniel Harton | {{ name }} </title>
     {{> styles }}
+    <link rel="stylesheet" href="/assets/css/articles.css">
 </head>
 
 <body>
 
 {{> navbar }}
 
-<h1>{{section}}</h1>
+<div class="expanded">
+    <div class="row">
+        {{#each articles}}        
+        <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
+            <div class="card">
+                <a href="/articles/{{this.title}}"><img class="card-img-top" src="{{this.thumbnail}}"></a>
+                <div class="card-block">
+                    <a href="/articles/{{this.title}}"><h5 class="text-bold">{{this.title}}</h5></a>
+                </div>
+                <div class="card-footer">
+                    <small>{{this.date}}</small>
+                </div>
+            </div>
+        </div>  
+        {{/each}} 
+    </div>
+</div>
 
 {{> scripts }}
 

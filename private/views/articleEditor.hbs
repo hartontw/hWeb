@@ -26,7 +26,7 @@
 {{> navbar }}
 
 <div id="main-container">
-  <form method={{ method }} action="/article" id="articleForm">
+  <form method={{ method }} action="/article" id="articleForm" encType="multipart/form-data">
     <input type="hidden" id="content" name="content">
     <div class="form-group">
       <label for="title">Title</label>
@@ -36,6 +36,11 @@
       <label for="tags">Tags</label>
       <input type="text" class="form-control" id="tags" name="tags" placeholder="Enter tags separated by commas">
     </div>      
+    <form>
+    <div class="form-group">
+      <label for="thumbnail">Thumbnail</label>
+      <input type="file" class="form-control-file" name="thumbnail" id="thumbnail" accept="image/*">
+    </div>
   </form>
 
     <div id="standalone-container">

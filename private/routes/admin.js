@@ -1,4 +1,6 @@
+const fs = require('fs');
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -18,6 +20,7 @@ let penalty = 0;
 app.use(bodyParser.json({ limit: '10mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 app.use(cookieParser());
+app.use(fileUpload());
 
 const verifyToken = (req, res, next) => {
     const token = req.cookies[env.TOKEN_COOKIE];
@@ -130,11 +133,11 @@ app.get('/article', verifyToken, (req, res) => {
 app.post('/article/', verifyToken, (req, res) => {
     const title = req.body.title;
     let tags = [];
+    const thumbnail = {
+        data: req.files.thumbnail.data,
+        contentType: req.files.thumbnail.mimetype
+    };
     const content = JSON.parse(req.body.content);
-
-    console.log(req.body.title);
-    console.log(req.body.tags);
-    console.log(req.body.content);
 
     // req.body.tags.split(',').forEach((tagName) => {
     //     console.log(tagName);
@@ -166,12 +169,12 @@ app.post('/article/', verifyToken, (req, res) => {
     let article = new Article({
         title,
         //tags,
+        thumbnail,
         content
     });
 
     article.save((err, article) => {
         if (!err) {
-            console.log(`/articles/${article.title}`);
             return res.redirect(`/articles/${article.title}`);
         } else throw err;
     });

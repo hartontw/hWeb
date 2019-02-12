@@ -8,6 +8,10 @@ let articleSchema = new mongoose.Schema({
         unique: true
     },
     //tags: [Tag.schema],
+    thumbnail: {
+        data: Buffer,
+        contentType: String
+    },
     date: {
         type: Date,
         default: Date.now

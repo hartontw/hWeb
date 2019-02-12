@@ -32,7 +32,11 @@ app.get('/articles/:title/', (req, res) => {
     Article.findOne({ title: req.params.title }, (err, article) => {
         if (!err) {
             if (article) {
+                let background = 'https://writology.com/userdata/faq/write.jpg';
+                params.background = background;
                 params.title = article.title;
+                params.date = article.date;
+                params.thumbnail = 'data:' + article.thumbnail.contentType + ';base64,' + Buffer.from(article.thumbnail.data, 'binary').toString('base64');
                 params.content = JSON.stringify(article.content);
                 res.render(hbs.getView('articleViewer'), params);
             }
