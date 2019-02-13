@@ -1,0 +1,188 @@
+{
+    "years": [{
+            "year": 2009,
+            "months": [{
+                "month": "Mayo",
+                "projects": [{
+                    "title": "Proyect Z",
+                    "position": "Programador C++ y Game Designer",
+                    "description": "Proyect Z es un MORPG ambientado en un mundo post-apocalíptico de temática zombie usando el motor Source.",
+                    "date": "Mayo 2009",
+                    "thumbnail": "https://www.youtube.com/embed/ucG_af6tEu8"
+                }]
+            }]
+        },
+        {
+            "year": 2011,
+            "months": [{
+                "month": "Diciembre",
+                "projects": [{
+                    "title": "The Passenger",
+                    "position": "Programador LUA",
+                    "description": "Aventura gráfica para iOS y Android.",
+                    "date": "Diciembre 2011",
+                    "thumbnail": "https://www.youtube.com/embed/VQDHNr6yMDg"
+                }]
+            }]
+        },
+        {
+            "year": 2012,
+            "months": [{
+                    "month": "Junio",
+                    "projects": [{
+                        "title": "Warlock Defense",
+                        "position": "Programador LUA y Game Designer",
+                        "description": "Juego de estrategia tipo 'Tower Defense' para iOS y Android.",
+                        "date": "Junio 2012",
+                        "thumbnail": "https://www.youtube.com/embed/VZGQ2d7b-tg"
+                    }]
+                },
+                {
+                    "month": "Julio",
+                    "projects": [{
+                        "title": "UFO Farm",
+                        "position": "Programador LUA y Game Designer",
+                        "description": "Juego sencillo tipo puzzle para iOS y Android.",
+                        "date": "Julio 2012",
+                        "thumbnail": "https://image.jimcdn.com/app/cms/image/transf/none/path/s5d10c843a70ac16e/image/ib0120e796f541c5e/version/1501541644/image.jpg"
+                    }]
+                },
+                {
+                    "month": "Septiembre",
+                    "projects": [{
+                        "title": "Thamoiland",
+                        "position": "Programador UnrealScript",
+                        "description": "Juego de resolución de laberintos para iOS.",
+                        "date": "Septiembre 2012",
+                        "thumbnail": "https://www.youtube.com/embed/6VQJjYNEnls"
+                    }]
+                }
+            ]
+        },
+        {
+            "year": 2013,
+            "months": [{
+                "month": "Marzo",
+                "projects": [{
+                    "title": "Cutler",
+                    "position": "Programador C# y Game Designer",
+                    "description": "Juego de infiltración y puzzle en 3D para varias plataformas.",
+                    "date": "Marzo 2013",
+                    "thumbnail": "https://www.youtube.com/embed/vXITLrJur6w"
+                }]
+            }]
+        },
+        {
+            "year": 2014,
+            "months": [{
+                    "month": "Febrero",
+                    "projects": [{
+                            "title": "Offroad Racing 2014",
+                            "position": "Programador C# y Level Designer",
+                            "description": "Juego de conducción en 2D simulada, empleando físicas. Incluye modo multijugador.",
+                            "date": "Febrero 2014",
+                            "thumbnail": "https://www.youtube.com/embed/rKNxE6ziKqo"
+                        },
+                        {
+                            "title": "Kartoon Crazy Racing",
+                            "position": "Programador C#",
+                            "description": "Juego 3D de carreras. Desde sus personajes hasta el mas minimo detalle presenta un rasgo cartoon. Ademas de poseer diversos modos de juego.",
+                            "date": "Febrero 2014",
+                            "thumbnail": "https://www.youtube.com/embed/Me7NitfQvxM"
+                        }
+                    ]
+                },
+                {
+                    "month": "Marzo",
+                    "projects": [{
+                            "title": "Trial Racing 2",
+                            "position": "Programador C# y Level Designer",
+                            "description": "Juego de trial en 2D simulada, empleando físicas. Incluye modo multijugador.",
+                            "date": "Marzo 2014",
+                            "thumbnail": "https://www.youtube.com/embed/XreB93ABIKo"
+                        },
+                        {
+                            "title": "Teeter Labyrinth Fruit",
+                            "position": "Programador C# y Level Designer",
+                            "description": "Juego de habilidad controlado por el acelerómetro del dispositivo.",
+                            "date": "Marzo 2014",
+                            "thumbnail": "https://www.youtube.com/embed/f2ScMK9nWdk"
+                        }
+                    ]
+                },
+                {
+                    "month": "Agosto",
+                    "projects": [{
+                        "title": "Replid",
+                        "position": "Programador C# y WebGL",
+                        "description": "Red social en 3D.",
+                        "date": "Agosto 2014",
+                        "thumbnail": "https://gust-production.s3.amazonaws.com/uploads/startup/logo_image/489985/replid-logo_redes.png"
+                    }]
+                },
+                {
+                    "month": "Septiembre",
+                    "projects": [{
+                        "title": "Sniper Contracts",
+                        "position": "Programador C# y Game Designer",
+                        "description": "Shooter en primera persona con físicas y balística, sistema de LODs y generación aleatoria de apariencia en los enemigos.",
+                        "date": "Septiembre 2014",
+                        "thumbnail": "https://www.youtube.com/embed/4zhH7gwacvc"
+                    }]
+                }
+            ]
+        },
+        {
+            "year": 2015,
+            "months": [{
+                "month": "Agosto",
+                "projects": [{
+                    "title": "Dead Weapon: Zombie",
+                    "position": "Programador C# y Game Designer",
+                    "description": "Shooter en primera persona con físicas y balística, sistema de LODs, múltiples armas, cinemáticas, niveles, minijuegos.",
+                    "date": "Agosto 2015",
+                    "thumbnail": "https://www.youtube.com/embed/gb0JPoACraQ"
+                }]
+            }]
+        },
+        {
+            "year": 2016,
+            "months": [{
+                "month": "Marzo",
+                "projects": [{
+                    "title": "Spoiler",
+                    "position": "Programador C# y Operario",
+                    "description": "Un concurso en serie pero no en serio, dinámico, rápido, loco.",
+                    "date": "Marzo 2016",
+                    "thumbnail": "https://www.youtube.com/embed/Bjaf3uJmm9M"
+                }]
+            }]
+        },
+        {
+            "year": 2017,
+            "months": [{
+                "month": "Mayo",
+                "projects": [{
+                    "title": "Maze of Gods",
+                    "position": "Programador C# y GLSL",
+                    "description": "Juego de plataformas 2D no lineal con multitud de niveles, fases y jefes.",
+                    "date": "Mayo 2017",
+                    "thumbnail": "https://pbs.twimg.com/media/CIao3SXWIAAf11D.png"
+                }]
+            }]
+        },
+        {
+            "year": 2019,
+            "months": [{
+                "month": "Agosto",
+                "projects": [{
+                    "title": "Arok & The chaos outbreaks",
+                    "position": "Programador C# y GLSL",
+                    "description": "Juego de plataformas y puzzles en 3D con toques de RPG y combates.",
+                    "date": "Agosto 2019",
+                    "thumbnail": "https://www.youtube.com/embed/IfJTNfLIJwk"
+                }]
+            }]
+        }
+    ]
+}
