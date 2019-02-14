@@ -3,12 +3,16 @@ const mongoose = require('mongoose');
 let tagSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        //unique: true,
+        required: true
     },
-    entries: {
+    articleEntries: {
         type: Number,
-        default: 1
+        default: 0
+    },
+    projectEntries: {
+        type: Number,
+        default: 0
     }
 });
 

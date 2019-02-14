@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Daniel Harton | {{ name }} </title>
+    <title>Daniel Harton | {{ title }} </title>
     {{> styles }}
 	<link rel="stylesheet" href="/assets/css/timeline-scroll.css">
 	<style>
@@ -26,8 +26,7 @@
 	<div class="row">
 	    <div id="timeline">
 		{{#each years}}		
-			{{#each months}}
-				{{#each projects}}
+			{{#each projects}}
 				<div class="row timeline-movement">
 					<div class="timeline-badge {{classA}}">					
 					</div>
@@ -37,13 +36,13 @@
 								<div class="timeline-panel {{classD}}">
 									<ul class="timeline-panel-ul">
 										<div class="lefting-wrap">
-											<li class="img-wraping"><a href="projects/{{title}}"><iframe class="responsive" src="{{thumbnail}}"></iframe></a></li>
+											<li class="img-wraping"><a href="projects/{{name}}"><iframe class="responsive" src="{{thumbnail}}"></iframe></a></li>
 										</div>
 										<div class="righting-wrap">
-											<li><a href="projects/{{title}}" class="importo">{{title}}</a></li>
+											<li><a href="projects/{{name}}" class="importo">{{name}}</a></li>
 											<li><span class="causale" style="color:#000; font-weight: 600;">{{position}}</span> </li>
 											<li><span class="causale">{{description}}</span> </li>
-											<li><p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>{{date}}</small></p> </li>
+											<li><p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>{{dateString}}</small></p> </li>
 										</div>
 										<div class="clear"></div>
 									</ul>
@@ -53,7 +52,6 @@
 						</div>
 					</div>
 				</div>
-				{{/each}}
 			{{/each}}
 			<div class="row timeline-movement timeline-movement-top">
 				<div class="timeline-badge timeline-future-movement">

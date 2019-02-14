@@ -7,7 +7,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                {{#each items}}
+                {{#each navItems}}
                     {{#unless this.hide}}
                     <li class="nav-item{{#if_eq this.ref ../current}} active{{/if_eq}}">
                         <a class="nav-link" href="/{{#unless this.home}}{{this.ref}}{{/unless}}">{{this.name}} {{#if_eq this.ref ../current}}<span class="sr-only">(current)</span>{{/if_eq}}</a>

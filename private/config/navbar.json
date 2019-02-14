@@ -1,6 +1,5 @@
 {
     "items": [{
-            "home": true,
             "ref": "articles",
             "name": "Artículos"
         },
@@ -16,5 +15,13 @@
             "ref": "contact",
             "name": "Contacto"
         }
+    ],
+    "styles": [
+        "/assets/css/bootstrap.min.css"
+    ],
+    "scripts": [
+        "/assets/js/jquery.min.js",
+        "/assets/js/umd/popper.min.js",
+        "/assets/js/bootstrap.min.js"
     ]
 }

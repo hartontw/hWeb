@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Daniel Harton | {{ title }} </title>
+    {{> styles }}
+    <style>
+        body{
+            background: #555;
+        }
+
+        .container{
+            padding: 25px;
+        }
+
+        .form-sec {
+            width: 100%;
+            background: #f8f9fa;
+            padding: 15px;
+            box-shadow: 0 0 4px #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    {{> navbar }}
+
+    <div class="container">
+        <div class="form-sec">
+            <h4>{{ title }}</h4>
+            <form name="projectForm" id="projectForm" method="post" action="{{action}}">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" class="form-control" id="projectName" placeholder="Project Name" name="projectName" value="{{project.name}}">
+                </div>
+                <div class="form-group">
+                    <label>Position:</label>
+                    <input type="text" class="form-control" id="position" placeholder="Position" name="position" value="{{project.position}}">
+                </div>
+                <div class="form-group">
+                    <label>Date:</label>
+                    <input type="date", class="form-control" id="date" name="date" value="{{project.date}}">
+                </div>                
+                <div class="form-group">
+                    <label>Tags:</label>
+                    <input type="text" class="form-control" id="tags" placeholder="Tags separate by commas" name="tags" value="{{project.tags}}">
+                </div>
+                <div class="form-group">
+                    <label>Thumbnail:</label>
+                    <input type="text" class="form-control" id="thumbnail" placeholder="Thumbnail link" name="thumbnail" value="{{project.thumbnail}}">
+                </div>
+                <div class="form-group">
+                    <label>Video:</label>
+                    <input type="text" class="form-control" id="video" placeholder="Video link" name="video" value="{{project.video}}">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea name="Description" class="form-control" id="Description" placeholder="Project description">{{project.description}}</textarea>
+                </div>                
+            </form>
+            <button type="submit" class="btn btn-default" id="submit">Submit</button>
+        </div>
+    </div>
+
+    {{> scripts }}
+    <script>
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
+
+        function validate() {
+            const name = $('#projectName').val();
+            if (isBlank(name))
+                return 'Project name is required';
+
+            const position = $('#position').val();
+            if (isBlank(position))
+                return 'Position is required';
+
+            const date = $('#date').val();
+            if (isBlank(date))
+                return 'Date is required';            
+        }
+
+        $("#submit").click(function (event) {            
+            event.preventDefault();
+            const err = validate();
+            if (!err)
+                $('#projectForm').submit();
+            else 
+                alert(err);
+        });
+    </script>
+
+    {{> footer }}
+
+</body>
+
+</html>
