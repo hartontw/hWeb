@@ -45,7 +45,7 @@ app.get('/projects', (req, res) => {
             let side = false;
             params.years.forEach((year) => {
                 year.projects.forEach((project) => {
-                    project.description = project.description && `${project.description.substring(0, 256)}...`;
+                    project.description = project.description.length > 128 ? `${project.description.substring(0, 125)}...` : project.description;
                     project.dateString = formatDate(project.date);
                     project.classA = side ? 'center-right' : 'center-left';
                     project.classB = side ? 'offset-sm-6 col-sm-6' : 'col-sm-6';
@@ -63,7 +63,7 @@ app.get('/projects', (req, res) => {
         });
 });
 
-app.get('/projects/:name', (req, res) => {
+app.get('/project/:name', (req, res) => {
     const name = req.params.name;
 
     let params = { title: name };
@@ -86,15 +86,15 @@ app.get('/project', middlewares.verifyToken, (req, res) => {
 });
 
 app.post('/project', middlewares.verifyToken, (req, res) => {
-    db.postProject(req.body.projectName, req.body.position, req.body.date, req.body.tags, req.body.description, req.body.thumbnail, req.body.video)
-        .then((project) => { res.redirect(`/projects/${project.name}`); })
+    db.postProject(req.body)
+        .then((project) => { res.redirect(`/project/${project.name}`); })
         .catch((error) => {
             const params = getError(error, { title: 'Post project' });
             res.render(hbs.getView(params.current), getParams(params));
         });
 });
 
-app.get('/projects/:name/edit', middlewares.verifyToken, (req, res) => {
+app.get('/project/:name/edit', middlewares.verifyToken, (req, res) => {
     const name = req.params.name;
 
     let params = { title: `Edit ${name}` };
@@ -102,7 +102,7 @@ app.get('/projects/:name/edit', middlewares.verifyToken, (req, res) => {
     db.getProject(name)
         .then((project) => {
             params.current = 'projectEditor';
-            params.action = `/projects/${name}`;
+            params.action = `/project/${name}`;
             const tags = [];
             project.tags.forEach((tag) => { tags.push(tag.name); });
             params.project = {
@@ -123,9 +123,9 @@ app.get('/projects/:name/edit', middlewares.verifyToken, (req, res) => {
         });
 });
 
-app.post('/projects/:name', middlewares.verifyToken, (req, res) => {
-    db.updateProject(req.params.name, req.body.projectName, req.body.position, req.body.date, req.body.tags, req.body.description, req.body.thumbnail, req.body.video)
-        .then((project) => { res.redirect(`/projects/${project.name}`); })
+app.post('/project/:name', middlewares.verifyToken, (req, res) => {
+    db.updateProject(req.params.name, req.body)
+        .then((project) => { res.redirect(`/project/${project.name}`); })
         .catch((error) => {
             const params = getError(error, { title: 'Post project' });
             res.render(hbs.getView(params.current), getParams(params));

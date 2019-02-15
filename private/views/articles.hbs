@@ -22,12 +22,17 @@
         {{#each articles}}        
         <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
             <div class="card">
-                <a href="/articles/{{title}}"><img class="card-img-top" src="{{thumbnail}}"></a>
+                <a href="/article/{{title}}"><img class="card-img-top" src="{{thumbnail}}"></a>
                 <div class="card-block">
-                    <a href="/articles/{{title}}"><h5 class="text-bold">{{title}}</h5></a>
+                    <a href="/article/{{title}}"><h5 class="text-bold">{{title}}</h5></a>
+                    <small>{{dateString}}</small>
                 </div>
                 <div class="card-footer">
-                    <small>{{dateString}}</small>
+                    <small>
+                        {{#each tags}}
+                        <a href="/articles/{{name}}">{{name}}</a>,
+                        {{/each}}
+                    </small>
                 </div>
             </div>
         </div>  

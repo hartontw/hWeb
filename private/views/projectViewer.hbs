@@ -5,11 +5,95 @@
     <meta charset="UTF-8">
     <title>Daniel Harton | {{ title }} </title>
     {{> styles }}
+    <style>
+    header {
+        position: relative;
+        background-color: black;
+        height: 60vh;
+        min-height: 25rem;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    header iframe {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 0;
+        -ms-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    header .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: black;
+        opacity: 0.5;
+        z-index: 1;
+    }
+
+    #name {
+        text-align: center;
+    }
+
+    #name p {
+        font-size: 80px;
+    }
+
+    .my-5 {
+        padding-bottom: 25px;
+    }
+
+    </style>
 </head>
 
 <body>
 
     {{> navbar }}
+
+<a href="http://www.youtube.com/watch_popup?v={{project.video}}">
+    <header>        
+        <div class="overlay"></div>
+        <iframe src="https://www.youtube.com/embed/{{project.video}}?rel=0&amp;autoplay=1&mute=1&loop=1&playlist={{project.video}}" frameborder="0" allowfullscreen></iframe>
+    </header>
+</a>
+
+<section class="my-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 mx-auto">  
+        <div id="name">
+            <p>{{project.name}}</p>
+        </div>        
+        <p>{{project.description}}</p>
+        <br/>
+        <h5>Participantes</h5>
+        <ul>
+            <li>Daniel Martínez Priego | {{project.position}}</li>
+            {{#each project.colaborators}}
+            <li><a href="{{url}}" target="_blank">{{name}}</a> | {{position}}</li>
+            {{/each}}
+        </ul>
+        <br/>
+        <h5>Links</h5>
+        <ul>
+            {{#each project.links}}
+            <li><a href="{{url}}" target="_blank">{{name}}</a></li>
+            {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
     {{> scripts }}
 

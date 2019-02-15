@@ -12,6 +12,7 @@
 
         .container{
             padding: 25px;
+            margin-bottom: 25px;
         }
 
         .form-sec {
@@ -19,6 +20,34 @@
             background: #f8f9fa;
             padding: 15px;
             box-shadow: 0 0 4px #ccc;
+        }
+
+        .form-group table{
+            width: 100%;
+        }
+
+        #links tr td:nth-child(1){
+            width: 30%;
+        }
+
+        #links tr td:nth-child(3){
+            width: 20px;
+        }
+
+        #colaborators tr td:nth-child(4){
+            width: 20px;
+        }
+
+        #addLink {
+            width: 100%;
+        }
+
+        #addColaborator {
+            width: 100%;
+        }
+
+        #submit{
+             width: 100%;
         }
     </style>
 </head>
@@ -48,19 +77,51 @@
                     <input type="text" class="form-control" id="tags" placeholder="Tags separate by commas" name="tags" value="{{project.tags}}">
                 </div>
                 <div class="form-group">
-                    <label>Thumbnail:</label>
-                    <input type="text" class="form-control" id="thumbnail" placeholder="Thumbnail link" name="thumbnail" value="{{project.thumbnail}}">
+                    <label>Thumbnail link:</label>
+                    <input type="text" class="form-control" id="thumbnail" name="thumbnail" value="{{project.thumbnail}}">
                 </div>
                 <div class="form-group">
-                    <label>Video:</label>
-                    <input type="text" class="form-control" id="video" placeholder="Video link" name="video" value="{{project.video}}">
+                    <label>Video link:</label>
+                    <input type="text" class="form-control" id="video" name="video" value="{{project.video}}">
                 </div>
                 <div class="form-group">
                     <label>Description:</label>
-                    <textarea name="Description" class="form-control" id="Description" placeholder="Project description">{{project.description}}</textarea>
-                </div>                
+                    <textarea class="form-control" id="description" name="description">{{project.description}}</textarea>
+                </div>      
+                <div class="form-group" id="colaborators">
+                    <label>Colaborators:</label>
+                    {{#each project.colaborators}}
+                    <table id="colaborator_{{@index}}" name="colaborator">
+                        <tr>
+                            <td><input type="text" class="form-control" name="colaboratorName_{{@index}}" placeholder="Name"></td>
+                            <td><input type="text" class="form-control" name="colaboratorPosition_{{@index}}" placeholder="Position"></td>
+                            <td><input type="text" class="form-control" name="colaboratorUrl_{{@index}}" placeholder="URL"></td>
+                            <td><button onclick="removeColaborator(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
+                        </tr>
+                    </table>
+                    {{/each}}                 
+                </div>   
+                <div class="form-group">
+                    <button type="button" id="addColaborator" class="btn btn-secondary btn-sm">Add</button>   
+                </div>
+                <div class="form-group" id="links">
+                    <label>Links:</label>
+                    {{#each project.links}}
+                    <table id="link_{{@index}}" name="link">
+                        <tr>
+                            <td><input type="text" class="form-control" name="linkName_{{@index}}" placeholder="Name"></td>
+                            <td><input type="text" class="form-control" name="linkUrl_{{@index}}" placeholder="URL"></td>
+                            <td><button onclick="removeLink(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
+                        </tr>
+                    </table>
+                    {{/each}}                 
+                </div>      
+                <div class="form-group">
+                    <button type="button" id="addLink" class="btn btn-secondary btn-sm">Add</button>
+                </div>
             </form>
-            <button type="submit" class="btn btn-default" id="submit">Submit</button>
+            <br />
+            <button type="submit" class="btn btn-primary" id="submit">Submit</button>
         </div>
     </div>
 
@@ -92,6 +153,32 @@
             else 
                 alert(err);
         });
+
+        let colaborators = document.getElementsByName("colaborator").length;        
+
+        $("#addColaborator").click(function (event) {
+            $("#colaborators").append("<table id='colaborator_"+colaborators+"' name='colaborator'><tr><td><input type='text' class='form-control' name='colaboratorName_"+colaborators+"' placeholder='Name'></td><td><input type='text' class='form-control' name='colaboratorPosition_"+colaborators+"' placeholder='Position'></td><td><input type='text' class='form-control' name='colaboratorUrl_"+colaborators+"' placeholder='URL'></td><td><button onclick='removeColaborator(this)' class='btn btn-secondary btn-sm' name='remove_"+colaborators+"'>-</button></td></tr></table>");
+            colaborators++;
+        }); 
+
+        function removeColaborator(element)
+        {
+            const num = event.target.name.slice(-1);
+            $("#colaborator_"+num).detach();
+        }
+
+        let links = document.getElementsByName("link").length;
+
+        $("#addLink").click(function (event) {
+            $("#links").append("<table id='link_"+links+"'><tr><td><input type='text' class='form-control' name='linkName' placeholder='Name'></td><td><input type='text' class='form-control' name='linkUrl' placeholder='URL'></td><td><button onclick='removeLink(this)' class='btn btn-secondary btn-sm' name='remove_"+links+"'>-</button></td></tr></table>");
+            links++;
+        }); 
+
+        function removeLink(element)
+        {
+            const num = event.target.name.slice(-1);
+            $("#link_"+num).detach();
+        }
     </script>
 
     {{> footer }}
