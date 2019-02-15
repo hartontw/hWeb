@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Tag = require('./tag');
 const Colaborator = require('./colaborator');
 
-const link = mongoose.Schema({ street: String, city: String });
+const link = mongoose.Schema({ name: String, url: String });
+const colaborator = mongoose.Schema({ name: String, position: String, url: String });
 
 let projectSchema = new mongoose.Schema({
     name: {
@@ -19,8 +20,8 @@ let projectSchema = new mongoose.Schema({
     description: String,
     thumbnail: String,
     video: String,
-    //colaborators: [Colaborator.schema],
-    //links: [link]
+    colaborators: [colaborator],
+    links: [link]
 });
 
 module.exports = mongoose.model('Project', projectSchema);

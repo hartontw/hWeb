@@ -20,20 +20,30 @@ const getError = (error, params) => {
     return params;
 }
 
-const home = (req, res) => {
+const home = (req, res, find) => {
 
     let params = {
         home: true,
         title: 'Artículos'
     };
 
-    db.getArticles()
+    const getDate = (date) => {
+        const numFormat = (num) => {
+            let sn = num.toString();
+            if (num < 10)
+                sn = '0' + sn;
+            return sn;
+        };
+
+        return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${numFormat(date.getHours())}:${numFormat(date.getMinutes())}`
+    };
+
+    db.getArticles(find)
         .then((articles) => {
             params.current = 'articles';
             params.articles = articles;
             params.articles.forEach((article) => {
-                const date = article.date;
-                article.dateString = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+                article.dateString = getDate(article.date);
             });
         })
         .catch((error) => {
@@ -44,11 +54,15 @@ const home = (req, res) => {
         });
 }
 
-app.get('/', home);
+app.get('/', (req, res) => { home(req, res); });
 
-app.get('/articles', home);
+app.get('/articles', (req, res) => { home(req, res); });
 
-app.get('/articles/:title', (req, res) => {
+app.get('/articles/:tag', (req, res) => {
+    home(req, res, { "tags.name": req.params.tag });
+});
+
+app.get('/article/:title', (req, res) => {
 
     const title = req.params.title;
 
@@ -75,14 +89,14 @@ app.get('/article', middlewares.verifyToken, (req, res) => {
 
 app.post('/article', middlewares.verifyToken, (req, res) => {
     db.postArticle(req.body.title, req.body.tags, req.body.thumbnail, req.body.background, req.body.content)
-        .then((article) => { res.redirect(`/articles/${article.title}`); })
+        .then((article) => { res.redirect(`/article/${article.title}`); })
         .catch((error) => {
             const params = getError(error, { title: 'Post article' });
             res.render(hbs.getView(params.current), getParams(params));
         });
 });
 
-app.get('/articles/:title/edit', middlewares.verifyToken, (req, res) => {
+app.get('/article/:title/edit', middlewares.verifyToken, (req, res) => {
     const title = req.params.title;
 
     let params = { title: `Edit ${title}` };
@@ -90,7 +104,7 @@ app.get('/articles/:title/edit', middlewares.verifyToken, (req, res) => {
     db.getArticle(title)
         .then((article) => {
             params.current = 'articleEditor';
-            params.action = `/articles/${title}`;
+            params.action = `/article/${title}`;
             params.article = article;
             const tags = [];
             article.tags.forEach((tag) => { tags.push(tag.name); });
@@ -104,9 +118,9 @@ app.get('/articles/:title/edit', middlewares.verifyToken, (req, res) => {
         });
 });
 
-app.post('/articles/:title', middlewares.verifyToken, (req, res) => {
+app.post('/article/:title', middlewares.verifyToken, (req, res) => {
     db.updateProject(req.params.title, req.body.title, req.body.tags, req.body.thumbnail, req.body.background, req.body.content)
-        .then((article) => { res.redirect(`/articles/${article.name}`); })
+        .then((article) => { res.redirect(`/article/${article.name}`); })
         .catch((error) => {
             const params = getError(error, { title: 'Post article' });
             res.render(hbs.getView(params.current), getParams(params));

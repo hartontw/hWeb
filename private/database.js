@@ -40,7 +40,7 @@ mongoose.connection.on('reconnected', function() {
 });
 
 mongoose.connection.on('error', function(err) {
-    console.err('MongoDB event error: ' + err);
+    console.error('MongoDB event error: ' + err);
 });
 
 let database;
@@ -313,34 +313,57 @@ class Database {
         }
     }
 
-    async postProject(name, position, dateString, tagString, description, thumbnail, video) {
+    async postProject(params) {
         try {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
+
+            const name = params.projectName;
 
             let project = await Project.findOne({ name });
 
             if (project)
                 throw new Error(`Project ${name} already exists.`);
 
-            const date = new Date(dateString);
-
             const tags = [];
             //Split by commas, trim all entries and remove duplicates.
-            tagString = [...new Set(tagString.split(',').map(t => t.trim()))];
-            for (let i = 0; i < tagString.length; i++) {
-                const tag = await this.addTag(tagString[i], 2);
+            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
+            for (let i = 0; i < params.tags.length; i++) {
+                const tag = await this.addTag(params.tags[i], 2);
                 tags.push(tag);
             };
 
+            const links = [];
+            if (params.linkName) {
+                for (let i = 0; i < params.linkName.length; i++) {
+                    links.push({
+                        name: params.linkName[i],
+                        url: params.linkUrl[i]
+                    });
+                }
+            }
+
+            const colaborators = [];
+            if (params.colaboratorName) {
+                for (let i = 0; i < params.colaboratorName.length; i++) {
+                    colaborators.push({
+                        name: params.colaboratorName[i],
+                        position: params.colaboratorPosition[i],
+                        url: params.colaboratorUrl[i]
+                    });
+                }
+            }
+
             project = new Project({
                 name,
-                position,
-                date,
+                position: params.position,
+                date: new Date(params.date),
                 tags,
-                description,
-                thumbnail,
-                video
+                description: params.description,
+                thumbnail: params.thumbnail,
+                video: params.video,
+                colaborators,
+                links
             });
 
             return await project.save();
@@ -349,7 +372,7 @@ class Database {
         }
     }
 
-    async updateProject(name, newName, position, dateString, tagString, description, thumbnailLink, videoLink) {
+    async updateProject(name, params) {
         try {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
@@ -360,11 +383,11 @@ class Database {
                 throw new Error(`Project ${name} does not exists.`);
 
             //Split by commas, trim all entries and remove duplicates.
-            tagString = [...new Set(tagString.split(',').map(t => t.trim()))];
+            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
 
-            const tags = project.tags.filter((tag) => tagString.includes(tag.name));
+            const tags = project.tags.filter((tag) => params.tags.includes(tag.name));
 
-            const oldTags = project.tags.filter((tag) => !tagString.includes(tag.name));
+            const oldTags = project.tags.filter((tag) => !params.tags.includes(tag.name));
             for (let i = 0; i < oldTags.length; i++) {
                 await this.removeTag(oldTags[i].name, 1);
             };
@@ -387,13 +410,36 @@ class Database {
                 }
             };
 
-            project.name = newName;
-            project.position = position;
-            project.date = dateString;
+            const links = [];
+            if (params.linkName) {
+                for (let i = 0; i < params.linkName.length; i++) {
+                    links.push({
+                        name: params.linkName[i],
+                        url: params.linkUrl[i]
+                    });
+                }
+            }
+
+            const colaborators = [];
+            if (params.colaboratorName) {
+                for (let i = 0; i < params.colaboratorName.length; i++) {
+                    colaborators.push({
+                        name: params.colaboratorName[i],
+                        position: params.colaboratorPosition[i],
+                        url: params.colaboratorUrl[i]
+                    });
+                }
+            }
+
+            project.name = params.projectName;
+            project.position = params.position;
+            project.date = new Date(params.date);
             project.tags = tags.concat(newTags);
-            project.description = description;
-            project.thumbnail = thumbnailLink;
-            project.video = videoLink;
+            project.description = params.description;
+            project.thumbnail = params.thumbnail;
+            project.video = params.video;
+            project.colaborators = colaborators;
+            project.links = links;
 
             return await project.save();
         } catch (error) {
