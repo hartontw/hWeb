@@ -78,9 +78,9 @@
         <br/>
         <h5>Participantes</h5>
         <ul>
-            <li>Daniel Martínez Priego | {{project.position}}</li>
+            <li>Daniel Martínez Priego --> <i>{{project.position}}</i></li>
             {{#each project.colaborators}}
-            <li><a href="{{url}}" target="_blank">{{name}}</a> | {{position}}</li>
+            <li><a href="{{url}}" target="_blank">{{name}}</a> --> <i>{{position}}</i></li>
             {{/each}}
         </ul>
         <br/>
@@ -89,7 +89,14 @@
             {{#each project.links}}
             <li><a href="{{url}}" target="_blank">{{name}}</a></li>
             {{/each}}
-        </ul>
+        </ul>        
+        <br/>
+        <h5>Tags</h5>
+        <p>
+            {{#each project.tags}}
+            <a href="/projects/{{name}}">{{name}}</a>,
+            {{/each}}
+        </p>        
       </div>
     </div>
   </div>

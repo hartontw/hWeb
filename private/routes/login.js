@@ -40,7 +40,7 @@ app.post('/login', (req, res) => {
         res.cookie(process.env.TOKEN_COOKIE, token);
         res.redirect('/admin');
     } else {
-        penalty += process.env.TOKEN_PENALTY;
+        penalty += Number(process.env.TOKEN_PENALTY);
         console.warn(`Someone is trying to login: ${penalty}`);
         res.redirect('/');
     }

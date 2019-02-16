@@ -45,7 +45,7 @@ app.get('/projects', (req, res) => {
             let side = false;
             params.years.forEach((year) => {
                 year.projects.forEach((project) => {
-                    project.description = project.description.length > 128 ? `${project.description.substring(0, 125)}...` : project.description;
+                    project.description = project.description.length > 80 ? `${project.description.substring(0, 77)}...` : project.description;
                     project.dateString = formatDate(project.date);
                     project.classA = side ? 'center-right' : 'center-left';
                     project.classB = side ? 'offset-sm-6 col-sm-6' : 'col-sm-6';
@@ -112,7 +112,9 @@ app.get('/project/:name/edit', middlewares.verifyToken, (req, res) => {
                 tags: tags.join(','),
                 thumbnail: project.thumbnail,
                 video: project.video,
-                description: project.description
+                description: project.description,
+                colaborators: project.colaborators,
+                links: project.links
             }
         })
         .catch((error) => {

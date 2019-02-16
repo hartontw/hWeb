@@ -333,25 +333,36 @@ class Database {
                 tags.push(tag);
             };
 
-            const links = [];
-            if (params.linkName) {
-                for (let i = 0; i < params.linkName.length; i++) {
-                    links.push({
-                        name: params.linkName[i],
-                        url: params.linkUrl[i]
-                    });
-                }
-            }
-
             const colaborators = [];
             if (params.colaboratorName) {
-                for (let i = 0; i < params.colaboratorName.length; i++) {
-                    colaborators.push({
-                        name: params.colaboratorName[i],
-                        position: params.colaboratorPosition[i],
-                        url: params.colaboratorUrl[i]
-                    });
-                }
+                if (Array.isArray(params.colaboratorName)) {
+                    for (let i = 0; i < params.colaboratorName.length; i++) {
+                        colaborators.push({
+                            name: params.colaboratorName[i],
+                            position: params.colaboratorPosition[i],
+                            url: params.colaboratorUrl[i]
+                        });
+                    }
+                } else colaborators.push({
+                    name: params.colaboratorName,
+                    position: params.colaboratorPosition,
+                    url: params.colaboratorUrl
+                });
+            }
+
+            const links = [];
+            if (params.linkName) {
+                if (Array.isArray(params.linkName)) {
+                    for (let i = 0; i < params.linkName.length; i++) {
+                        links.push({
+                            name: params.linkName[i],
+                            url: params.linkUrl[i]
+                        });
+                    }
+                } else links.push({
+                    name: params.linkName,
+                    url: params.linkUrl
+                });
             }
 
             project = new Project({
@@ -410,25 +421,36 @@ class Database {
                 }
             };
 
-            const links = [];
-            if (params.linkName) {
-                for (let i = 0; i < params.linkName.length; i++) {
-                    links.push({
-                        name: params.linkName[i],
-                        url: params.linkUrl[i]
-                    });
-                }
-            }
-
             const colaborators = [];
             if (params.colaboratorName) {
-                for (let i = 0; i < params.colaboratorName.length; i++) {
-                    colaborators.push({
-                        name: params.colaboratorName[i],
-                        position: params.colaboratorPosition[i],
-                        url: params.colaboratorUrl[i]
-                    });
-                }
+                if (Array.isArray(params.colaboratorName)) {
+                    for (let i = 0; i < params.colaboratorName.length; i++) {
+                        colaborators.push({
+                            name: params.colaboratorName[i],
+                            position: params.colaboratorPosition[i],
+                            url: params.colaboratorUrl[i]
+                        });
+                    }
+                } else colaborators.push({
+                    name: params.colaboratorName,
+                    position: params.colaboratorPosition,
+                    url: params.colaboratorUrl
+                });
+            }
+
+            const links = [];
+            if (params.linkName) {
+                if (Array.isArray(params.linkName)) {
+                    for (let i = 0; i < params.linkName.length; i++) {
+                        links.push({
+                            name: params.linkName[i],
+                            url: params.linkUrl[i]
+                        });
+                    }
+                } else links.push({
+                    name: params.linkName,
+                    url: params.linkUrl
+                });
             }
 
             project.name = params.projectName;

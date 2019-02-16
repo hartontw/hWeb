@@ -93,9 +93,9 @@
                     {{#each project.colaborators}}
                     <table id="colaborator_{{@index}}" name="colaborator">
                         <tr>
-                            <td><input type="text" class="form-control" name="colaboratorName_{{@index}}" placeholder="Name"></td>
-                            <td><input type="text" class="form-control" name="colaboratorPosition_{{@index}}" placeholder="Position"></td>
-                            <td><input type="text" class="form-control" name="colaboratorUrl_{{@index}}" placeholder="URL"></td>
+                            <td><input type="text" class="form-control" name="colaboratorName" placeholder="Name" value="{{name}}"></td>
+                            <td><input type="text" class="form-control" name="colaboratorPosition" placeholder="Position" value="{{position}}"></td>
+                            <td><input type="text" class="form-control" name="colaboratorUrl" placeholder="URL" value="{{url}}"></td>
                             <td><button onclick="removeColaborator(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
                         </tr>
                     </table>
@@ -109,8 +109,8 @@
                     {{#each project.links}}
                     <table id="link_{{@index}}" name="link">
                         <tr>
-                            <td><input type="text" class="form-control" name="linkName_{{@index}}" placeholder="Name"></td>
-                            <td><input type="text" class="form-control" name="linkUrl_{{@index}}" placeholder="URL"></td>
+                            <td><input type="text" class="form-control" name="linkName" placeholder="Name" value="{{name}}"></td>
+                            <td><input type="text" class="form-control" name="linkUrl" placeholder="URL" value="{{url}}"></td>
                             <td><button onclick="removeLink(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
                         </tr>
                     </table>
@@ -157,7 +157,7 @@
         let colaborators = document.getElementsByName("colaborator").length;        
 
         $("#addColaborator").click(function (event) {
-            $("#colaborators").append("<table id='colaborator_"+colaborators+"' name='colaborator'><tr><td><input type='text' class='form-control' name='colaboratorName_"+colaborators+"' placeholder='Name'></td><td><input type='text' class='form-control' name='colaboratorPosition_"+colaborators+"' placeholder='Position'></td><td><input type='text' class='form-control' name='colaboratorUrl_"+colaborators+"' placeholder='URL'></td><td><button onclick='removeColaborator(this)' class='btn btn-secondary btn-sm' name='remove_"+colaborators+"'>-</button></td></tr></table>");
+            $("#colaborators").append("<table id='colaborator_"+colaborators+"' name='colaborator'><tr><td><input type='text' class='form-control' name='colaboratorName' placeholder='Name'></td><td><input type='text' class='form-control' name='colaboratorPosition' placeholder='Position'></td><td><input type='text' class='form-control' name='colaboratorUrl' placeholder='URL'></td><td><button onclick='removeColaborator(this)' class='btn btn-secondary btn-sm' name='remove_"+colaborators+"'>-</button></td></tr></table>");
             colaborators++;
         }); 
 
@@ -170,7 +170,7 @@
         let links = document.getElementsByName("link").length;
 
         $("#addLink").click(function (event) {
-            $("#links").append("<table id='link_"+links+"'><tr><td><input type='text' class='form-control' name='linkName' placeholder='Name'></td><td><input type='text' class='form-control' name='linkUrl' placeholder='URL'></td><td><button onclick='removeLink(this)' class='btn btn-secondary btn-sm' name='remove_"+links+"'>-</button></td></tr></table>");
+            $("#links").append("<table id='link_"+links+"' name='link'><tr><td><input type='text' class='form-control' name='linkName' placeholder='Name'></td><td><input type='text' class='form-control' name='linkUrl' placeholder='URL'></td><td><button onclick='removeLink(this)' class='btn btn-secondary btn-sm' name='remove_"+links+"'>-</button></td></tr></table>");
             links++;
         }); 
 
