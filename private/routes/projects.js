@@ -20,8 +20,7 @@ const getError = (error, params) => {
     return params;
 }
 
-app.get('/projects', (req, res) => {
-
+const projects = (req, res, find) => {
     let params = { title: 'Proyectos' };
 
     db.getProjects()
@@ -61,6 +60,14 @@ app.get('/projects', (req, res) => {
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
         });
+};
+
+app.get('/projects', (req, res) => {
+    projects(req, res);
+});
+
+app.get('/projects/:tag', (req, res) => {
+    projects(req, res, { tag: req.params.tag });
 });
 
 app.get('/project/:name', (req, res) => {
@@ -82,7 +89,30 @@ app.get('/project/:name', (req, res) => {
 });
 
 app.get('/project', middlewares.verifyToken, (req, res) => {
-    res.render(hbs.getView('projectEditor'), getParams({ title: 'New project', action: '/project' }));
+    const params = { title: 'New project' };
+
+    db.getCompanies()
+        .then((companies) => {
+            params.companies = companies;
+
+            db.getColaborators()
+                .then((colaborators) => {
+                    params.colaborators = colaborators;
+
+                    params.action = '/project';
+                    params.current = 'projectEditor';
+                })
+                .catch((error) => {
+                    params = getError(error, params);
+                })
+                .finally(() => {
+                    res.render(hbs.getView(params.current), getParams(params));
+                });
+        })
+        .catch((error) => {
+            params = getError(error, params);
+            res.render(hbs.getView(params.current), getParams(params));
+        });
 });
 
 app.post('/project', middlewares.verifyToken, (req, res) => {
@@ -101,26 +131,43 @@ app.get('/project/:name/edit', middlewares.verifyToken, (req, res) => {
 
     db.getProject(name)
         .then((project) => {
-            params.current = 'projectEditor';
-            params.action = `/project/${name}`;
-            const tags = [];
-            project.tags.forEach((tag) => { tags.push(tag.name); });
-            params.project = {
-                name: project.name,
-                position: project.position,
-                date: project.date.toISOString().substring(0, 10),
-                tags: tags.join(','),
-                thumbnail: project.thumbnail,
-                video: project.video,
-                description: project.description,
-                colaborators: project.colaborators,
-                links: project.links
-            }
+            db.getCompanies()
+                .then((companies) => {
+                    params.companies = companies;
+
+                    db.getColaborators()
+                        .then((colaborators) => {
+                            params.colaborators = colaborators;
+
+                            params.current = 'projectEditor';
+                            params.action = `/project/${name}`;
+                            params.project = {
+                                name: project.name,
+                                position: project.position,
+                                date: project.date.toISOString().substring(0, 10),
+                                tags: project.tags.map(tag => tag.name).join(','),
+                                thumbnail: project.thumbnail,
+                                video: project.video,
+                                description: project.description,
+                                company: project.company,
+                                colaborators: project.colaborators,
+                                links: project.links
+                            };
+                        })
+                        .catch((error) => {
+                            params = getError(error, params);
+                        })
+                        .finally(() => {
+                            res.render(hbs.getView(params.current), getParams(params));
+                        });
+                })
+                .catch((error) => {
+                    params = getError(error, params);
+                    res.render(hbs.getView(params.current), getParams(params));
+                });
         })
         .catch((error) => {
             params = getError(error, params);
-        })
-        .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
         });
 });
@@ -129,7 +176,7 @@ app.post('/project/:name', middlewares.verifyToken, (req, res) => {
     db.updateProject(req.params.name, req.body)
         .then((project) => { res.redirect(`/project/${project.name}`); })
         .catch((error) => {
-            const params = getError(error, { title: 'Post project' });
+            const params = getError(error, { title: 'Update project' });
             res.render(hbs.getView(params.current), getParams(params));
         });
 });

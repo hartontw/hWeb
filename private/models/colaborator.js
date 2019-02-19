@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
-const link = mongoose.Schema({ street: String, city: String });
+const Image = require('./image');
+const link = mongoose.Schema({ name: String, url: String, image: Image.schema });
 
 let colaboratorSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    //links: [link]
+    links: [link]
 });
 
 module.exports = mongoose.model('Colaborator', colaboratorSchema);

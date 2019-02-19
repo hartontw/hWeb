@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
+const axios = require('axios')
 
 const Article = require(process.env.ROOT + '/private/models/article');
 const Project = require(process.env.ROOT + '/private/models/project');
 const Tag = require(process.env.ROOT + '/private/models/tag');
+const Image = require(process.env.ROOT + '/private/models/image');
+const Company = require(process.env.ROOT + '/private/models/company');
+const Colaborator = require(process.env.ROOT + '/private/models/colaborator');
 
 //mongoose.Promise = Promise;
 
@@ -43,6 +48,30 @@ mongoose.connection.on('error', function(err) {
     console.error('MongoDB event error: ' + err);
 });
 
+async function downloadImage(image) {
+    let path = process.env.ROOT + '/public/assets/images/';
+
+    if (!fs.existsSync(path))
+        fs.mkdirSync(path);
+
+    path += image._id.toString();
+
+    const writer = fs.createWriteStream(path)
+
+    const response = await axios({
+        url: image.url,
+        method: 'GET',
+        responseType: 'stream'
+    })
+
+    response.data.pipe(writer)
+
+    return new Promise((resolve, reject) => {
+        writer.on('finish', resolve)
+        writer.on('error', reject)
+    })
+}
+
 let database;
 
 class Database {
@@ -70,6 +99,74 @@ class Database {
     }
 
     disconnect() { return mongoose.connection.close(); }
+
+    ////////////
+    // IMAGES //
+    ////////////
+
+    async getImage(url) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            const image = await Image.find({ url });
+
+            if (!image)
+                throw new Error(`Image with url ${name} not found.`);
+
+            return `/assets/images/${picture._id}.png`;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async addImage(url) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            let image = await Image.findOne({ url });
+
+            if (image) {
+                const path = `${process.env.ROOT}/public/assets/images/${image._id}.png`;
+
+                if (!fs.existsSync(path))
+                    await downloadImage(image);
+
+                return image;
+            }
+
+            image = new Image({ url });
+
+            await downloadImage(image);
+
+            return await image.save();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async removeImage(image) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            const anyProject = Project.findOne({ thumbnail: image });
+            const anyArticle = Article.findOne({ $or: [{ 'thumbnail': image }, { 'background': image }] });
+            const anyColaboratorLink = Colaborator.findOne({ 'links.image': image });
+
+            if (!anyProject && !anyArticle && !anyColaboratorLink) {
+                await Image.deleteOne({ url });
+                const path = `${process.env.ROOT}/public/assets/images/${image._id}.png`;
+                fs.unlinkSync(path);
+            }
+
+            return image;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     //////////
     // TAGS //
@@ -180,10 +277,12 @@ class Database {
         }
     }
 
-    async postArticle(title, tagString, thumbnail, background, rawContent) {
+    async postArticle(params) {
         try {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
+
+            const title = params.title;
 
             let article = await Article.findOne({ title });
 
@@ -192,18 +291,24 @@ class Database {
 
             const tags = [];
             //Split by commas, trim all entries and remove duplicates.
-            tagString = [...new Set(tagString.split(',').map(t => t.trim()))];
-            for (let i = 0; i < tagString.length; i++) {
-                const tag = await this.addTag(tagString[i], 1);
+            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
+            for (let i = 0; i < params.tags.length; i++) {
+                const tag = await this.addTag(params.tags[i], 1);
                 tags.push(tag);
             }
+
+            const thumbnail = await this.addImage(params.thumbnail);
+
+            const background = await this.addImage(params.background);
+
+            const content = JSON.parse(params.content);
 
             article = new Article({
                 title,
                 tags,
                 thumbnail,
                 background,
-                content: JSON.parse(rawContent)
+                content
             });
 
             return await article.save();
@@ -212,37 +317,37 @@ class Database {
         }
     }
 
-    async updateArticle(title, newtitle, tagString, thumbnail, background, rawContent) {
+    async updateArticle(title, params) {
         try {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let article = Article.findOne({ title });
+            let article = await Article.findOne({ title });
 
             if (!article)
                 throw new Error(`Article ${title} does not exists.`);
 
             //Split by commas, trim all entries and remove duplicates.
-            tagString = [...new Set(tagString.split(',').map(t => t.trim()))];
+            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
 
-            const tags = article.tags.filter((tag) => tagString.includes(tag.name));
+            const tags = article.tags.filter((tag) => params.tags.includes(tag.name));
 
-            const oldTags = article.tags.filter((tag) => !tagString.includes(tag.name));
+            const oldTags = article.tags.filter((tag) => !params.tags.includes(tag.name));
             for (let i = 0; i < oldTags.length; i++) {
                 await this.removeTag(oldTags[i].name, 1);
             };
 
             const newTags = [];
-            for (let i = 0; i < tagString.length; i++) {
-                const name = tagString[i];
+            for (let i = 0; i < params.tags.length; i++) {
+                const name = params.tags[i];
 
                 let found = false;
-                tags.forEach((tag) => {
-                    if (tag.name === name) {
+                for (let j = 0; j < tags.length; j++) {
+                    if (tags[j].name === name) {
                         found = true;
                         break;
                     }
-                });
+                };
 
                 if (!found) {
                     const tag = await this.addTag(name, 1);
@@ -250,13 +355,32 @@ class Database {
                 }
             }
 
-            article.title = newtitle;
+            const lastThumbnail = article.thumbnail;
+            const thumbnail = lastThumbnail;
+            if (lastThumbnail.url !== params.thumbnail)
+                thumbnail = await this.addImage(params.thumbnail);
+
+            const lastBackground = article.background;
+            const background = lastBackground
+            if (lastBackground.url !== params.background)
+                background = await this.addImage(params.background);
+
+            article.title = params.title;
             article.tags = tags.concat(newTags);
             article.thumbnail = thumbnail;
             article.background = background;
-            article.content = JSON.parse(rawContent);
+            article.content = JSON.parse(params.content);
 
-            return await article.save();
+            await article.save();
+
+            if (lastThumbnail !== thumbnail)
+                await this.removeImage(lastThumbnail);
+
+            if (lastBackground !== background)
+                await this.removeImage(lastBackground);
+
+            return article;
+
         } catch (error) {
             throw error;
         }
@@ -267,7 +391,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let article = Article.findOne({ title });
+            let article = await Article.findOne({ title });
 
             if (!article)
                 throw new Error(`Article ${title} does not exists.`);
@@ -276,7 +400,263 @@ class Database {
                 await this.removeTag(article.tags[i].name);
             };
 
-            return await article.deleteOne({ title });
+            await Article.deleteOne({ title });
+
+            await this.removeImage(article.thumbnail);
+
+            await this.removeImage(article.background);
+
+            return article;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    ///////////////
+    // COMPANIES //
+    ///////////////
+
+    async getCompanies(find, sort) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            return await Company.find(find || {}).sort(sort || { name: -1 });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getCompany(name) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            const company = await Company.findOne({ name });
+
+            if (!company)
+                throw new Error(`Company ${name} not found.`);
+
+            return company;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async postCompany(params) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            const name = params.name;
+
+            let company = await Company.findOne({ name });
+
+            if (company)
+                throw new Error(`Company ${name} already exists.`);
+
+            const logo = await this.addImage(params.logo);
+
+            company = new Company({
+                name,
+                logo,
+                website: params.website
+            });
+
+            return await company.save();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async updateCompany(name, params) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            let company = await Company.findOne({ name });
+
+            if (!company)
+                throw new Error(`Company ${name} does not exists.`);
+
+            const lastLogo = company.logo;
+            let logo = lastLogo;
+            if (lastLogo.url !== params.logo)
+                logo = await this.addImage(params.logo);
+
+            company.name = params.name;
+            company.logo = logo;
+            company.website = params.website;
+
+            await company.save();
+
+            if (lastLogo !== logo)
+                await this.removeImage(lastLogo);
+
+            return company;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async deleteCompany(name) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            let company = await Company.findOne({ name });
+
+            if (!company)
+                throw new Error(`Company ${name} does not exists.`);
+
+            await Company.deleteOne({ name });
+
+            await this.removeImage(company.logo);
+
+            return company;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //////////////////
+    // COLABORATORS //
+    //////////////////
+
+    async getColaborators(find, sort) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            return await Colaborator.find(find || {}).sort(sort || { name: -1 });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getColaborator(name) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            const colaborator = await Colaborator.findOne({ name });
+
+            if (!colaborator)
+                throw new Error(`Colaborator ${name} not found.`);
+
+            return colaborator;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async postColaborator(params) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            const name = params.name;
+
+            let colaborator = await Colaborator.findOne({ name });
+
+            if (colaborator)
+                throw new Error(`Colaborator ${name} already exists.`);
+
+            const links = [];
+            if (params.linkName) {
+                if (Array.isArray(params.linkName)) {
+                    for (let i = 0; i < params.linkName.length; i++) {
+                        const image = await this.addImage(params.linkImage[i]);
+                        links.push({
+                            name: params.linkName[i],
+                            url: params.linkUrl[i],
+                            image
+                        });
+                    }
+                } else {
+                    const image = await this.addImage(params.linkImage);
+                    links.push({
+                        name: params.linkName,
+                        url: params.linkUrl,
+                        image
+                    });
+                }
+            }
+
+            colaborator = new Colaborator({
+                name,
+                links
+            });
+
+            return await colaborator.save();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async updateColaborator(name, params) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            let colaborator = await Colaborator.findOne({ name });
+
+            if (!colaborator)
+                throw new Error(`Colaborator ${name} does not exists.`);
+
+            const links = [];
+            if (params.linkName) {
+                if (Array.isArray(params.linkName)) {
+                    for (let i = 0; i < params.linkName.length; i++) {
+                        const image = await this.addImage(params.linkImage[i]);
+                        links.push({
+                            name: params.linkName[i],
+                            url: params.linkUrl[i],
+                            image
+                        });
+                    }
+                } else {
+                    const image = await this.addImage(params.linkImage);
+                    links.push({
+                        name: params.linkName,
+                        url: params.linkUrl,
+                        image
+                    });
+                }
+            }
+
+            const oldLinks = colaborator.links.filter((link) => !links.map(l => l.image).includes(link.image));
+
+            colaborator.name = params.name;
+            colaborator.links = links;
+
+            await colaborator.save();
+
+            for (let i = 0; i < oldLinks.length; i++)
+                await removeImage(oldLinks[i].image);
+
+            return colaborator;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async deleteColaborator(name) {
+        try {
+            if (!this.isConnected)
+                throw new Error(`Database is ${this.state}`);
+
+            let colaborator = await Colaborator.findOne({ name });
+
+            if (!colaborator)
+                throw new Error(`Colaborator ${name} does not exists.`);
+
+            await Colaborator.deleteOne({ name });
+
+            for (let i = 0; i < colaborator.links.length; i++)
+                await removeImage(colaborator.links[i].image);
+
+            return colaborator;
         } catch (error) {
             throw error;
         }
@@ -333,21 +713,39 @@ class Database {
                 tags.push(tag);
             };
 
+            const company = await Company.findOne({ name: params.companyName });
+
+            const getRoles = (index) => {
+                let roles = [];
+                const r = params[`colaboratorRole_${index}`];
+                if (r) {
+                    if (Array.isArray(r))
+                        roles = r;
+                    else
+                        roles.push(r);
+                }
+                return roles;
+            };
+
             const colaborators = [];
             if (params.colaboratorName) {
                 if (Array.isArray(params.colaboratorName)) {
                     for (let i = 0; i < params.colaboratorName.length; i++) {
+                        const reference = await Colaborator.findOne({ 'name': params.colaboratorName[i] });
+                        const roles = getRoles(params.colaboratorIndex[i]);
                         colaborators.push({
-                            name: params.colaboratorName[i],
-                            position: params.colaboratorPosition[i],
-                            url: params.colaboratorUrl[i]
+                            reference,
+                            roles
                         });
                     }
-                } else colaborators.push({
-                    name: params.colaboratorName,
-                    position: params.colaboratorPosition,
-                    url: params.colaboratorUrl
-                });
+                } else {
+                    const reference = await Colaborator.findOne({ 'name': params.colaboratorName });
+                    const roles = getRoles(params.colaboratorIndex);
+                    colaborators.push({
+                        reference,
+                        roles
+                    });
+                }
             }
 
             const links = [];
@@ -365,14 +763,17 @@ class Database {
                 });
             }
 
+            const thumbnail = await this.addImage(params.thumbnail);
+
             project = new Project({
                 name,
                 position: params.position,
                 date: new Date(params.date),
                 tags,
                 description: params.description,
-                thumbnail: params.thumbnail,
+                thumbnail,
                 video: params.video,
+                company,
                 colaborators,
                 links
             });
@@ -421,21 +822,39 @@ class Database {
                 }
             };
 
+            const company = await Company.findOne({ name: params.companyName });
+
+            const getRoles = (index) => {
+                let roles = [];
+                const r = params[`colaboratorRole_${index}`];
+                if (r) {
+                    if (Array.isArray(r))
+                        roles = r;
+                    else
+                        roles.push(r);
+                }
+                return roles;
+            };
+
             const colaborators = [];
             if (params.colaboratorName) {
                 if (Array.isArray(params.colaboratorName)) {
                     for (let i = 0; i < params.colaboratorName.length; i++) {
+                        const reference = await Colaborator.findOne({ 'name': params.colaboratorName[i] });
+                        const roles = getRoles(params.colaboratorIndex[i]);
                         colaborators.push({
-                            name: params.colaboratorName[i],
-                            position: params.colaboratorPosition[i],
-                            url: params.colaboratorUrl[i]
+                            reference,
+                            roles
                         });
                     }
-                } else colaborators.push({
-                    name: params.colaboratorName,
-                    position: params.colaboratorPosition,
-                    url: params.colaboratorUrl
-                });
+                } else {
+                    const reference = await Colaborator.findOne({ 'name': params.colaboratorName });
+                    const roles = getRoles(params.colaboratorIndex);
+                    colaborators.push({
+                        reference,
+                        roles
+                    });
+                }
             }
 
             const links = [];
@@ -453,17 +872,28 @@ class Database {
                 });
             }
 
+            const lastThumbnail = project.thumbnail;
+            let thumbnail = lastThumbnail;
+            if (lastThumbnail.url !== params.thumbnail)
+                thumbnail = await this.addImage(params.thumbnail);
+
             project.name = params.projectName;
             project.position = params.position;
             project.date = new Date(params.date);
             project.tags = tags.concat(newTags);
             project.description = params.description;
-            project.thumbnail = params.thumbnail;
+            project.thumbnail = thumbnail;
             project.video = params.video;
+            project.company = company;
             project.colaborators = colaborators;
             project.links = links;
 
-            return await project.save();
+            await project.save();
+
+            if (lastThumbnail !== thumbnail)
+                await this.removeImage(lastThumbnail);
+
+            return project;
         } catch (error) {
             throw error;
         }
@@ -474,7 +904,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let project = Project.findOne({ name });
+            let project = await Project.findOne({ name });
 
             if (!project)
                 throw new Error(`Project ${name} does not exists.`);
@@ -483,7 +913,11 @@ class Database {
                 await this.removeTag(projects.tags[i].name, 2);
             };
 
-            return await project.deleteOne({ name });
+            await Project.deleteOne({ name });
+
+            await this.removeImage(project.thumbnail);
+
+            return project;
         } catch (error) {
             throw error;
         }

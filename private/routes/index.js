@@ -22,6 +22,8 @@ app.use(require('./articles'));
 app.use(require('./projects'));
 app.use(require('./apps'));
 app.use(require('./contact'));
+app.use(require('./companies'));
+app.use(require('./colaborators'));
 
 app.get('/*', (req, res) => {
     const params = {

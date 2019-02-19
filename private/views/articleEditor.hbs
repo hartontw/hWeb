@@ -12,6 +12,7 @@
     body>#main-container {
       margin: 20px auto;
       max-width: 80%;
+      padding-bottom: 30px;
   }
 
     #editor-container {
@@ -20,7 +21,7 @@
 
     #editor-container .ql-video{
       pointer-events: none;
-}
+    }
   </style>
 </head>
 
@@ -29,8 +30,7 @@
 {{> navbar }}
 
 <div id="main-container">
-  <form method="post" action="{{ action }}" id="articleForm"><!-- encType="multipart/form-data"> -->
-    <input type="hidden" id="content" name="content">
+  <form method="post" action="{{ action }}" id="articleForm"><!-- encType="multipart/form-data"> -->    
     <div class="form-group">
       <label for="title">Title</label>
       <input type="text" class="form-control" id="title" name="title" placeholder="Enter title" value="{{article.title}}">
@@ -42,14 +42,15 @@
     <form>
     <div class="form-group">
       <label for="thumbnail">Thumbnail</label>
-      <input type="text" class="form-control-file" name="thumbnail" id="thumbnail" value="{{article.thumbnail}}">
+      <input type="text" class="form-control-file" name="thumbnail" id="thumbnail" value="{{article.thumbnail.url}}">
       <!-- <input type="file" class="form-control-file" name="thumbnail" id="thumbnail" accept="image/*"> -->
     </div>
     <div class="form-group">
       <label for="background">Background</label>
-      <input type="text" class="form-control-file" name="background" id="background" value="{{article.background}}">
+      <input type="text" class="form-control-file" name="background" id="background" value="{{article.background.url}}">
       <!-- <input type="file" class="form-control-file" name="background" id="background" accept="image/*"> -->
     </div>
+    <input type="hidden" id="content" name="content">
   </form>
 
     <div id="standalone-container">
@@ -102,8 +103,7 @@
     </div>
     </br>
 
-    <button class="btn btn-primary" id="submit">Create</button>
-
+    <button class="btn btn-primary" id="submit">Submit</button>    
 </div>
 
 {{> scripts }}
@@ -114,7 +114,7 @@
 <script src="/assets/js/video-resize.min.js"></script>
 <script>
 
-  var quill = new Quill('#editor-container', {
+var quill = new Quill('#editor-container', {
     modules: {
         imageResize: {},
         videoResize: {},
@@ -124,6 +124,14 @@
     readOnly: false,
     theme: 'snow'
 });
+
+{{#if article}}
+let delta = {{{ article.content }}};
+{{else}}
+let delta = {}
+{{/if}}
+
+quill.setContents(delta);
 
 function isBlank(str) {
     return (!str || /^\s*$/.test(str));

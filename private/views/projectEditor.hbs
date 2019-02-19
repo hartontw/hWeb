@@ -34,7 +34,7 @@
             width: 20px;
         }
 
-        #colaborators tr td:nth-child(4){
+        #colaborators tr td:nth-child(2){
             width: 20px;
         }
 
@@ -78,7 +78,7 @@
                 </div>
                 <div class="form-group">
                     <label>Thumbnail link:</label>
-                    <input type="text" class="form-control" id="thumbnail" name="thumbnail" value="{{project.thumbnail}}">
+                    <input type="text" class="form-control" id="thumbnail" name="thumbnail" value="{{project.thumbnail.url}}">
                 </div>
                 <div class="form-group">
                     <label>Video link:</label>
@@ -87,37 +87,74 @@
                 <div class="form-group">
                     <label>Description:</label>
                     <textarea class="form-control" id="description" name="description">{{project.description}}</textarea>
-                </div>      
+                </div>
+                <div class="form-group">
+                    <label>Company:</label>
+                    <br/>                    
+                    <select class="form-control" name="companyName" form="projectForm">
+                    {{#if project.company.name}}
+                        {{#each companies}}
+                            {{#if_eq ../project.company.name name}}
+                                <option selected value="{{name}}">{{name}}</option>
+                            {{else}}
+                                <option value="{{name}}">{{name}}</option>
+                            {{/if_eq}}
+                        {{/each}}
+                    {{else}}
+                        {{#each companies}}
+                            <option value="{{name}}">{{name}}</option>
+                        {{/each}}
+                    {{/if}}
+                    </select>                        
+                </div>                
                 <div class="form-group" id="colaborators">
                     <label>Colaborators:</label>
                     {{#each project.colaborators}}
                     <table id="colaborator_{{@index}}" name="colaborator">
                         <tr>
-                            <td><input type="text" class="form-control" name="colaboratorName" placeholder="Name" value="{{name}}"></td>
-                            <td><input type="text" class="form-control" name="colaboratorPosition" placeholder="Position" value="{{position}}"></td>
-                            <td><input type="text" class="form-control" name="colaboratorUrl" placeholder="URL" value="{{url}}"></td>
-                            <td><button onclick="removeColaborator(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
+                            <td>
+                                <input type="hidden" name="colaboratorIndex" value="{{@index}}">
+                                <select class="form-control" name="colaboratorName" form="projectForm">
+                                {{#each @root.colaborators}}
+                                    {{#if_eq ../reference.name name}}
+                                    <option selected value="{{name}}">{{name}}</option>
+                                    {{else}}
+                                    <option value="{{name}}">{{name}}</option>
+                                    {{/if_eq}}
+                                {{/each}}
+                                </select>
+                            </td>
+                            <td><button type="button" onclick="removeColaborator(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
                         </tr>
-                    </table>
-                    {{/each}}                 
-                </div>   
+                        {{#each roles}}
+                        <tr id="role_{{@../index}}_{{@index}}" name="role_{{@../index}}">
+                            <td><input type="text" class="form-control" style="margin-left:20%;width:80%" name="colaboratorRole_{{@../index}}" value="{{this}}"></td>
+                            <td><button type="button" onclick="removeRole(this)" class="btn btn-secondary btn-sm" id="remove_{{@../index}}_{{@index}}">-</button></td>
+                        </tr>
+                        {{/each}}
+                        <tr id="addRoleButton_{{@index}}">
+                            <td><button type="button" onclick="addRole(this)" id="addRole_{{@index}}" class="btn btn-secondary btn-sm">Add Role</button></td>
+                        </tr>
+                    </table><br/>
+                    {{/each}}
+                </div>
                 <div class="form-group">
-                    <button type="button" id="addColaborator" class="btn btn-secondary btn-sm">Add</button>   
+                    <button type="button" id="addColaborator" class="btn btn-secondary btn-sm">Add Colaborator</button>   
                 </div>
                 <div class="form-group" id="links">
                     <label>Links:</label>
                     {{#each project.links}}
-                    <table id="link_{{@index}}" name="link">
+                    <table id="link_{{name}}" name="link">
                         <tr>
                             <td><input type="text" class="form-control" name="linkName" placeholder="Name" value="{{name}}"></td>
                             <td><input type="text" class="form-control" name="linkUrl" placeholder="URL" value="{{url}}"></td>
-                            <td><button onclick="removeLink(this)" class="btn btn-secondary btn-sm" name="remove_{{@index}}">-</button></td>
+                            <td><button type="button" onclick="removeLink(this)" class="btn btn-secondary btn-sm" name="remove_{{name}}">-</button></td>
                         </tr>
                     </table>
                     {{/each}}                 
                 </div>      
                 <div class="form-group">
-                    <button type="button" id="addLink" class="btn btn-secondary btn-sm">Add</button>
+                    <button type="button" id="addLink" class="btn btn-secondary btn-sm">Add Link</button>
                 </div>
             </form>
             <br />
@@ -145,7 +182,7 @@
                 return 'Date is required';            
         }
 
-        $("#submit").click(function (event) {            
+        $("#submit").click(function (event) {
             event.preventDefault();
             const err = validate();
             if (!err)
@@ -154,30 +191,94 @@
                 alert(err);
         });
 
-        let colaborators = document.getElementsByName("colaborator").length;        
+        const getColaborators = () => {
+            let data = "";
+            {{#each colaborators}}
+                data += "<option value='{{name}}'>{{name}}</option>";
+            {{/each}}
+            return data;
+        };        
+
+        let colaborators = document.getElementsByName("colaborator").length;
+
+        let colaboratorsRoles = [];
+        document.getElementsByName("colaborator").forEach((colaborator) => {            
+            const sp = colaborator.id.split('_');
+            const index = sp[sp.length-1];
+            const roles = colaborator.querySelector(`td[name="role_${index}"]`);
+            colaboratorsRoles.push({index, roles});
+        });
 
         $("#addColaborator").click(function (event) {
-            $("#colaborators").append("<table id='colaborator_"+colaborators+"' name='colaborator'><tr><td><input type='text' class='form-control' name='colaboratorName' placeholder='Name'></td><td><input type='text' class='form-control' name='colaboratorPosition' placeholder='Position'></td><td><input type='text' class='form-control' name='colaboratorUrl' placeholder='URL'></td><td><button onclick='removeColaborator(this)' class='btn btn-secondary btn-sm' name='remove_"+colaborators+"'>-</button></td></tr></table>");
+            const data = getColaborators();
+            const content = `<table id="colaborator_${colaborators}" name="colaborator">
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="colaboratorIndex" value="${colaborators}">
+                                        <select class="form-control" name="colaboratorName" form="projectForm">${data}</select>
+                                    </td>
+                                    <td><button type="button" onclick="removeColaborator(this)" class="btn btn-secondary btn-sm" name="remove_${colaborators}">-</button></td>
+                                </tr>
+                                <tr id="addRoleButton_${colaborators}">
+                                    <td><button type="button" onclick="addRole(this)" id="addRole_${colaborators}" class="btn btn-secondary btn-sm">Add Role</button></td>
+                                </tr>
+                            </table><br/>`;
+            
+            $("#colaborators").append(content);            
+            colaboratorsRoles.push({index:colaborators, roles:0});
             colaborators++;
         }); 
 
         function removeColaborator(element)
         {
-            const num = event.target.name.slice(-1);
-            $("#colaborator_"+num).detach();
+            const sp = element.name.split('_');
+            const index = sp[sp.length-1];
+            $("#colaborator_"+index).detach();
+            colaboratorsRoles = colaboratorsRoles.filter(item => item.index != index);
+        }
+
+        function addRole(element) {
+            const sp = element.id.split('_');
+            const index = sp[sp.length-1];
+            let roles = colaboratorsRoles.find(item => item.index == index).roles;
+
+            const content = `<tr id="role_${index}_${roles}" name="role_${index}">
+                                <td><input type="text" class="form-control" style="margin-left:20%;width:80%" name="colaboratorRole_${index}"></td>
+                                <td><button type="button" onclick="removeRole(this)" class="btn btn-secondary btn-sm" id="remove_${index}_${roles}">-</button></td>
+                            </tr>`;
+
+            $(`#addRoleButton_${index}`).before(content);
+            roles++;
+            colaboratorsRoles = colaboratorsRoles.map(item => item.index == index ? {index: item.index, roles} : item);
+        }
+
+        function removeRole(element) {
+            const sp = element.id.split('_');
+            const index = sp[sp.length-2];
+            const roles = sp[sp.length-1];
+            $("#role_"+index+"_"+roles).detach();
         }
 
         let links = document.getElementsByName("link").length;
 
         $("#addLink").click(function (event) {
-            $("#links").append("<table id='link_"+links+"' name='link'><tr><td><input type='text' class='form-control' name='linkName' placeholder='Name'></td><td><input type='text' class='form-control' name='linkUrl' placeholder='URL'></td><td><button onclick='removeLink(this)' class='btn btn-secondary btn-sm' name='remove_"+links+"'>-</button></td></tr></table>");
+            const content = `<table id='link_${links}' name='link'>
+                                <tr>
+                                    <td><input type='text' class='form-control' name='linkName' placeholder='Name'></td>
+                                    <td><input type='text' class='form-control' name='linkUrl' placeholder='URL'></td>
+                                    <td><button type="button" onclick='removeLink(this)' class='btn btn-secondary btn-sm' name='remove_${links}'>-</button></td>
+                                </tr>
+                            </table>`;
+
+            $("#links").append(content);
             links++;
         }); 
 
         function removeLink(element)
         {
-            const num = event.target.name.slice(-1);
-            $("#link_"+num).detach();
+            const sp = element.name.split('_');
+            const name = sp[sp.length-1];
+            $("#link_"+name).detach();
         }
     </script>
 

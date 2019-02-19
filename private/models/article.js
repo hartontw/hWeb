@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Tag = require('./tag');
+const Image = require('./image');
 
 let articleSchema = new mongoose.Schema({
     title: {
@@ -8,8 +9,8 @@ let articleSchema = new mongoose.Schema({
         unique: true
     },
     tags: [Tag.schema],
-    thumbnail: String,
-    background: String,
+    thumbnail: Image.schema,
+    background: Image.schema,
     date: {
         type: Date,
         default: Date.now

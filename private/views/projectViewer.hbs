@@ -53,6 +53,11 @@
         padding-bottom: 25px;
     }
 
+    .logo {
+        width: 64px;
+        height: 64px;
+    }
+
     </style>
 </head>
 
@@ -76,7 +81,8 @@
         </div>        
         <p>{{project.description}}</p>
         <br/>
-        <h5>Participantes</h5>
+        <a href="{{project.company.website}}"><img class="logo" src="/assets/images/{{project.company.logo._id}}" alt="{{project.company.name}}"></a>
+        <br/>
         <ul>
             <li>Daniel Martínez Priego --> <i>{{project.position}}</i></li>
             {{#each project.colaborators}}
