@@ -255,7 +255,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Article.find(find || {}).sort(sort || { date: -1 });
+            return await Article.find(find || {}).sort(sort || { date: -1 }).populate('tags').populate('thumbnail').populate('background');
         } catch (error) {
             throw error;
         }
@@ -266,7 +266,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            const article = await Article.findOne({ title });
+            const article = await Article.findOne({ title }).populate('tags').populate('thumbnail').populate('background');
 
             if (!article)
                 throw new Error(`Article ${title} not found.`);
@@ -322,7 +322,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let article = await Article.findOne({ title });
+            let article = await Article.findOne({ title }).populate('tags').populate('thumbnail').populate('background');
 
             if (!article)
                 throw new Error(`Article ${title} does not exists.`);
@@ -391,7 +391,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let article = await Article.findOne({ title });
+            let article = await Article.findOne({ title }).populate('tags').populate('thumbnail').populate('background');
 
             if (!article)
                 throw new Error(`Article ${title} does not exists.`);
@@ -421,7 +421,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Company.find(find || {}).sort(sort || { name: -1 });
+            return await Company.find(find || {}).sort(sort || { name: -1 }).populate('logo');
         } catch (error) {
             throw error;
         }
@@ -432,7 +432,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            const company = await Company.findOne({ name });
+            const company = await Company.findOne({ name }).populate('logo');
 
             if (!company)
                 throw new Error(`Company ${name} not found.`);
@@ -474,7 +474,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let company = await Company.findOne({ name });
+            let company = await Company.findOne({ name }).populate('logo');
 
             if (!company)
                 throw new Error(`Company ${name} does not exists.`);
@@ -504,7 +504,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let company = await Company.findOne({ name });
+            let company = await Company.findOne({ name }).populate('logo');
 
             if (!company)
                 throw new Error(`Company ${name} does not exists.`);
@@ -528,7 +528,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Colaborator.find(find || {}).sort(sort || { name: -1 });
+            return await Colaborator.find(find || {}).sort(sort || { name: -1 }).populate('links.image');
         } catch (error) {
             throw error;
         }
@@ -539,7 +539,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            const colaborator = await Colaborator.findOne({ name });
+            const colaborator = await Colaborator.findOne({ name }).populate('links.image');
 
             if (!colaborator)
                 throw new Error(`Colaborator ${name} not found.`);
@@ -599,7 +599,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let colaborator = await Colaborator.findOne({ name });
+            let colaborator = await Colaborator.findOne({ name }).populate('links.image');
 
             if (!colaborator)
                 throw new Error(`Colaborator ${name} does not exists.`);
@@ -646,7 +646,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let colaborator = await Colaborator.findOne({ name });
+            let colaborator = await Colaborator.findOne({ name }).populate('links.image');
 
             if (!colaborator)
                 throw new Error(`Colaborator ${name} does not exists.`);
@@ -671,7 +671,11 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Project.find(find || {}).sort(sort || { date: 1 });
+            return await Project.find(find || {}).sort(sort || { date: 1 })
+                .populate('tags')
+                .populate('thumbnail')
+                .populate('company')
+                .populate('colaborators.reference');
         } catch (error) {
             throw error;
         }
@@ -682,7 +686,11 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            const project = await Project.findOne({ name });
+            const project = await Project.findOne({ name })
+                .populate('tags')
+                .populate('thumbnail')
+                .populate('company')
+                .populate('colaborators.reference');
 
             if (!project)
                 throw new Error(`Project ${name} does not exists.`);
@@ -789,7 +797,11 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let project = await Project.findOne({ name });
+            let project = await Project.findOne({ name })
+                .populate('tags')
+                .populate('thumbnail')
+                .populate('company')
+                .populate('colaborators.reference');
 
             if (!project)
                 throw new Error(`Project ${name} does not exists.`);
@@ -904,7 +916,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            let project = await Project.findOne({ name });
+            let project = await Project.findOne({ name }).populate('tags').populate('thumbnail');
 
             if (!project)
                 throw new Error(`Project ${name} does not exists.`);

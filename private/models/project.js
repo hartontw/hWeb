@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
-const Tag = require('./tag');
-const Image = require('./image');
-const Company = require('./company');
-const Colaborator = require('./colaborator');
 
 const link = mongoose.Schema({ name: String, url: String });
-const colaborator = mongoose.Schema({ reference: Colaborator.schema, roles: [String] });
+const colaborator = mongoose.Schema({ reference: { type: mongoose.Schema.Types.ObjectId, ref: 'Colaborator' }, roles: [String] });
 
 let projectSchema = new mongoose.Schema({
     name: {
@@ -18,11 +14,11 @@ let projectSchema = new mongoose.Schema({
         required: true,
     },
     date: Date,
-    tags: [Tag.schema],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
     description: String,
-    thumbnail: Image.schema,
+    thumbnail: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
     video: String,
-    company: Company.schema,
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
     colaborators: [colaborator],
     links: [link]
 });

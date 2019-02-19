@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-const Image = require('./image');
-const link = mongoose.Schema({ name: String, url: String, image: Image.schema });
+const link = mongoose.Schema({ name: String, url: String, image: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' } });
 
 let colaboratorSchema = new mongoose.Schema({
     name: {

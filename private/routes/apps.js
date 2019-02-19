@@ -7,11 +7,12 @@ const app = express();
 app.get('/apps', (req, res) => {
     const params = {
         title: 'Aplicaciones',
+        current: 'apps',
         navItems: navbar.items,
         styles: navbar.styles,
         scripts: navbar.scripts
     };
-    res.render(hbs.getView('apps'), params);
+    res.render(hbs.getView(params.current), params);
 });
 
 module.exports = app;

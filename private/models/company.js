@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
-const Image = require('./image');
-
 let companySchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    logo: Image.schema,
+    logo: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
     website: String
 });
 

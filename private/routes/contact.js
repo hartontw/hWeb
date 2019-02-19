@@ -1,4 +1,5 @@
 const express = require('express');
+const hbs = require(__dirname + '/../hbs');
 const navbar = require(__dirname + '/../config/navbar.json');
 
 const app = express();
@@ -6,11 +7,12 @@ const app = express();
 app.get('/contact', (req, res) => {
     const params = {
         title: 'Contacto',
+        current: 'contact',
         navItems: navbar.items,
         styles: navbar.styles,
         scripts: navbar.scripts
     };
-    res.render(process.env.ROOT + '/private/views/contact.hbs', params);
+    res.render(hbs.getView(params.current), params);
 });
 
 module.exports = app;
