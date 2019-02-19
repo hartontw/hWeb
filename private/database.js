@@ -356,12 +356,12 @@ class Database {
             }
 
             const lastThumbnail = article.thumbnail;
-            const thumbnail = lastThumbnail;
+            let thumbnail = lastThumbnail;
             if (lastThumbnail.url !== params.thumbnail)
                 thumbnail = await this.addImage(params.thumbnail);
 
             const lastBackground = article.background;
-            const background = lastBackground
+            let background = lastBackground
             if (lastBackground.url !== params.background)
                 background = await this.addImage(params.background);
 
