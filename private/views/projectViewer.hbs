@@ -54,8 +54,11 @@
     }
 
     .logo {
-        width: 64px;
-        height: 64px;
+        width: 128px;
+        height: 128px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     </style>
@@ -79,16 +82,7 @@
         <div id="name">
             <p>{{project.name}}</p>
         </div>        
-        <p>{{project.description}}</p>
-        <br/>
-        <a href="{{project.company.website}}"><img class="logo" src="/assets/images/{{project.company.logo._id}}" alt="{{project.company.name}}"></a>
-        <br/>
-        <ul>
-            <li><a href="/contact">Daniel Martínez Priego</a> --> <i>{{project.position}}</i></li>
-            {{#each project.colaborators}}
-            <li><a href="{{url}}" target="_blank">{{name}}</a> --> <i>{{position}}</i></li>
-            {{/each}}
-        </ul>
+        <p>{{project.description}}</p>        
         <br/>
         <h5>Links</h5>
         <ul>
@@ -102,7 +96,30 @@
             {{#each project.tags}}
             <a href="/projects/{{name}}">{{name}}</a>,
             {{/each}}
-        </p>        
+        </p> 
+        <br/>    
+        <h5>Créditos</h5>
+        <ul>
+            <li><a href="/contact">Daniel Martínez Priego</a>
+                <ul>
+                    {{#each project.roles}}
+                    <li><i>{{this}}</i></li>
+                    {{/each}}
+                </ul>
+            </li>            
+            {{#each project.colaborators}}
+            <br/>
+            <li><a href="/colaborator/{{reference.name}}" target="_blank">{{reference.name}}</a>
+                <ul>
+                    {{#each roles}}
+                    <li><i>{{this}}</i></li>
+                    {{/each}}
+                </ul>
+            </li>
+            {{/each}}
+        </ul>
+        <br/>
+        <a href="{{project.company.website}}"><img class="logo" src="/assets/images/{{project.company.logo._id}}" alt="{{project.company.name}}"></a>   
       </div>
     </div>
   </div>

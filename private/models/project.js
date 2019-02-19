@@ -9,10 +9,7 @@ let projectSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    position: {
-        type: String,
-        required: true,
-    },
+    roles: [String],
     date: Date,
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
     description: String,

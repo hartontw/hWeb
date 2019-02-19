@@ -713,6 +713,14 @@ class Database {
             if (project)
                 throw new Error(`Project ${name} already exists.`);
 
+            let roles = [];
+            if (params.role) {
+                if (Array.isArray(params.role))
+                    roles = params.role;
+                else
+                    roles.push(params.role);
+            }
+
             const tags = [];
             //Split by commas, trim all entries and remove duplicates.
             params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
@@ -775,7 +783,7 @@ class Database {
 
             project = new Project({
                 name,
-                position: params.position,
+                roles,
                 date: new Date(params.date),
                 tags,
                 description: params.description,
@@ -805,6 +813,14 @@ class Database {
 
             if (!project)
                 throw new Error(`Project ${name} does not exists.`);
+
+            let roles = [];
+            if (params.role) {
+                if (Array.isArray(params.role))
+                    roles = params.role;
+                else
+                    roles.push(params.role);
+            }
 
             //Split by commas, trim all entries and remove duplicates.
             params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
@@ -890,7 +906,7 @@ class Database {
                 thumbnail = await this.addImage(params.thumbnail);
 
             project.name = params.projectName;
-            project.position = params.position;
+            project.roles = roles;
             project.date = new Date(params.date);
             project.tags = tags.concat(newTags);
             project.description = params.description;

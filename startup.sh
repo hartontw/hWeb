@@ -1,9 +1,4 @@
 #!/bin/bash
-cd /
-cd home
-cd harton
-cd projects
-cd hWeb
 clear
 echo "------------------------"
 echo "||||||||| hWeb |||||||||"
