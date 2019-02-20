@@ -297,7 +297,7 @@ class Database {
 
             const tags = [];
             //Split by commas, trim all entries and remove duplicates.
-            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
+            params.tags = params.tags ? [...new Set(params.tags.split(',').map(t => t.trim()))] : [];
             for (let i = 0; i < params.tags.length; i++) {
                 const tag = await this.addTag(params.tags[i], 1);
                 tags.push(tag);
@@ -334,7 +334,7 @@ class Database {
                 throw new Error(`Article ${title} does not exists.`);
 
             //Split by commas, trim all entries and remove duplicates.
-            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
+            params.tags = params.tags ? [...new Set(params.tags.split(',').map(t => t.trim()))] : [];
 
             const tags = article.tags.filter((tag) => params.tags.includes(tag.name));
 
@@ -732,7 +732,7 @@ class Database {
 
             const tags = [];
             //Split by commas, trim all entries and remove duplicates.
-            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
+            params.tags = params.tags ? [...new Set(params.tags.split(',').map(t => t.trim()))] : [];
             for (let i = 0; i < params.tags.length; i++) {
                 const tag = await this.addTag(params.tags[i], 2);
                 tags.push(tag);
@@ -832,7 +832,7 @@ class Database {
             }
 
             //Split by commas, trim all entries and remove duplicates.
-            params.tags = [...new Set(params.tags.split(',').map(t => t.trim()))];
+            params.tags = params.tags ? [...new Set(params.tags.split(',').map(t => t.trim()))] : [];
 
             const tags = project.tags.filter((tag) => params.tags.includes(tag.name));
 
@@ -913,10 +913,6 @@ class Database {
             let thumbnail = lastThumbnail;
             if (lastThumbnail.url !== params.thumbnail)
                 thumbnail = await this.addImage(params.thumbnail);
-
-            console.log(tags);
-            console.log(newTags);
-            console.log(tags.concat(newTags));
 
             project.name = params.projectName;
             project.roles = roles;
