@@ -427,7 +427,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Company.find(find || {}).sort(sort || { name: -1 }).populate('logo');
+            return await Company.find(find || {}).populate('logo').sort(sort || { name: 1 });
         } catch (error) {
             throw error;
         }
@@ -534,7 +534,7 @@ class Database {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Colaborator.find(find || {}).sort(sort || { name: -1 }).populate('links.image');
+            return await Colaborator.find(find || {}).populate('links.image').sort(sort || { name: 1 });
         } catch (error) {
             throw error;
         }
