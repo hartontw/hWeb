@@ -20,10 +20,10 @@ const getError = (error, params) => {
     return params;
 }
 
-const projects = (req, res, find) => {
+const projects = (req, res, find, sort, tag) => {
     let params = { title: 'Proyectos' };
 
-    db.getProjects()
+    db.getProjects(find, sort, tag)
         .then((projects) => {
             params.current = 'projects';
 
@@ -67,7 +67,7 @@ app.get('/projects', (req, res) => {
 });
 
 app.get('/projects/:tag', (req, res) => {
-    projects(req, res, { tag: req.params.tag });
+    projects(req, res, null, null, req.params.tag);
 });
 
 app.get('/project/:name', (req, res) => {

@@ -250,12 +250,18 @@ class Database {
     // ARTICLES //
     //////////////
 
-    async getArticles(find, sort) {
+    async getArticles(find, sort, tag) {
         try {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Article.find(find || {}).sort(sort || { date: -1 }).populate('tags').populate('thumbnail').populate('background');
+            const articles = await Article.find(find || {})
+                .populate('tags')
+                .populate('thumbnail')
+                .populate('background')
+                .sort(sort || { date: -1 });
+
+            return tag ? articles.filter((article) => article.tags.map((tag) => tag.name).includes(tag)) : articles;
         } catch (error) {
             throw error;
         }
@@ -666,16 +672,19 @@ class Database {
     // PROJECTS //
     //////////////
 
-    async getProjects(find, sort) {
+    async getProjects(find, sort, tag) {
         try {
             if (!this.isConnected)
                 throw new Error(`Database is ${this.state}`);
 
-            return await Project.find(find || {}).sort(sort || { date: 1 })
+            const projects = await Project.find(find || {})
                 .populate('tags')
                 .populate('thumbnail')
                 .populate('company')
-                .populate('colaborators.reference');
+                .populate('colaborators.reference')
+                .sort(sort || { date: 1 });
+
+            return tag ? projects.filter((project) => project.tags.map((tag) => tag.name).includes(tag)) : projects;
         } catch (error) {
             throw error;
         }

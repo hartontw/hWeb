@@ -20,7 +20,7 @@ const getError = (error, params) => {
     return params;
 }
 
-const home = (req, res, find) => {
+const home = (req, res, find, sort, tag) => {
 
     let params = {
         home: true,
@@ -38,7 +38,7 @@ const home = (req, res, find) => {
         return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} ${numFormat(date.getHours())}:${numFormat(date.getMinutes())}`
     };
 
-    db.getArticles(find)
+    db.getArticles(find, sort, tag)
         .then((articles) => {
             params.current = 'articles';
             params.articles = articles;
@@ -59,7 +59,7 @@ app.get('/', (req, res) => { home(req, res); });
 app.get('/articles', (req, res) => { home(req, res); });
 
 app.get('/articles/:tag', (req, res) => {
-    home(req, res, { "tags.name": req.params.tag });
+    home(req, res, null, null, req.params.tag);
 });
 
 app.get('/article/:title', (req, res) => {
