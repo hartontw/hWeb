@@ -403,7 +403,7 @@ class Database {
                 throw new Error(`Article ${title} does not exists.`);
 
             for (let i = 0; i < article.tags.length; i++) {
-                await this.removeTag(article.tags[i].name);
+                await this.removeTag(article.tags[i].name, 1);
             };
 
             await Article.deleteOne({ title });
@@ -838,7 +838,7 @@ class Database {
 
             const oldTags = project.tags.filter((tag) => !params.tags.includes(tag.name));
             for (let i = 0; i < oldTags.length; i++) {
-                await this.removeTag(oldTags[i].name, 1);
+                await this.removeTag(oldTags[i].name, 2);
             };
 
             const newTags = [];
