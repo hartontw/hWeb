@@ -6,6 +6,10 @@
     <title>Daniel Harton | {{ title }} </title>
     {{> styles }}
     <style>
+    body {
+        background-color: #EEEEEE;
+    }
+
     header {
         position: relative;
         background-color: black;
@@ -61,6 +65,22 @@
         margin-right: auto;
     }
 
+    .colaboratorCard {        
+        position:    absolute;
+        z-index:     9999;
+        width: auto;
+        background-color: white;
+        border-style:groove;
+        padding: 20px;  
+        background-color: #EEEEFF;
+    }
+
+    .linkImage {
+        width: 64px;
+        height: 64px;
+        background-color: white;
+    }
+
     </style>
 </head>
 
@@ -109,7 +129,7 @@
             </li>            
             {{#each project.colaborators}}
             <br/>
-            <li><a href="/colaborator/{{reference.name}}" target="_blank">{{reference.name}}</a>
+            <li><a class="showColaborator" onclick="showColaborator(this, '{{reference.name}}')" href="javascript:void(0);">{{reference.name}}</a>
                 <ul>
                     {{#each roles}}
                     <li><i>{{this}}</i></li>
@@ -126,6 +146,72 @@
 </section>
 
     {{> scripts }}
+    <script>
+        var name, links;
+        
+        const colaborators = [];        
+
+        {{#each project.colaborators}}
+
+            name = "{{reference.name}}";
+
+            links = [];
+            {{#each reference.links}}
+                links.push({
+                    name: "{{name}}",
+                    url: "{{url}}",
+                    image: "{{image}}"
+                });
+            {{/each}}
+
+            colaborators.push({name, links});
+
+        {{/each}}     
+
+        function removeCard()
+        {
+            let div = $('#colaboratorCard');
+            if (div)
+                div.detach();
+        }   
+
+        function showColaborator(element, colaboratorName)
+        {
+            removeCard();
+
+            const bodyRect = document.body.getBoundingClientRect();
+            const elemRect = element.getBoundingClientRect();
+
+            let offsetX = elemRect.left - bodyRect.left;
+            let offsetY = elemRect.top - bodyRect.top;
+
+            const colaborator = colaborators.find(c => c.name === colaboratorName);
+
+            let content = `<div id="colaboratorCard" class="colaboratorCard"><h3>${colaborator.name}</h3><br/><br/>`;
+            colaborator.links.forEach(link => {
+                content += `<a href="${link.url}" target="_blank"><img class="linkImage" src="/assets/images/${link.image}" alt="${link.name}"></a>
+                            <span style="display:inline-block; width:5px;"></span>`;
+            });
+            content += '</div>';
+                    
+            $("body").append(content);
+
+            div = $('#colaboratorCard');
+
+            //offsetX -= div.width()/2;
+            offsetY -= div.height();
+
+            div.css({'left': offsetX + 'px', 'top': offsetY + 'px'});
+        }        
+
+        $('.showColaborator').click(event => {
+            event.stopPropagation();
+        })
+
+        $('body').click(event => {
+            removeCard();
+        });
+    </script>
 
     {{> footer }}
 
