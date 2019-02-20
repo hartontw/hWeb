@@ -143,7 +143,7 @@ app.get('/project/:name/edit', middlewares.verifyToken, (req, res) => {
                             params.action = `/project/${name}`;
                             params.project = {
                                 name: project.name,
-                                position: project.position,
+                                roles: project.roles,
                                 date: project.date.toISOString().substring(0, 10),
                                 tags: project.tags.map(tag => tag.name).join(','),
                                 thumbnail: project.thumbnail,

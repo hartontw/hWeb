@@ -633,7 +633,7 @@ class Database {
             await colaborator.save();
 
             for (let i = 0; i < oldLinks.length; i++)
-                await removeImage(oldLinks[i].image);
+                await this.removeImage(oldLinks[i].image);
 
             return colaborator;
         } catch (error) {
