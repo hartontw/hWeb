@@ -842,8 +842,8 @@ class Database {
             };
 
             const newTags = [];
-            for (let i = 0; i < newTags.length; i++) {
-                const name = newTags[i];
+            for (let i = 0; i < params.tags.length; i++) {
+                const name = params.tags[i];
 
                 let found = false;
                 for (let j = 0; j < tags.length; j++) {
@@ -857,7 +857,7 @@ class Database {
                     const tag = await this.addTag(name, 2);
                     newTags.push(tag);
                 }
-            };
+            }
 
             const company = await Company.findOne({ name: params.companyName });
 
@@ -913,6 +913,10 @@ class Database {
             let thumbnail = lastThumbnail;
             if (lastThumbnail.url !== params.thumbnail)
                 thumbnail = await this.addImage(params.thumbnail);
+
+            console.log(tags);
+            console.log(newTags);
+            console.log(tags.concat(newTags));
 
             project.name = params.projectName;
             project.roles = roles;
