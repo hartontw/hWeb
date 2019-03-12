@@ -2,7 +2,7 @@ require('./config/environment');
 
 const express = require('express');
 const db = require('./database');
-const hbs = require('./hbs');
+const logger = require('./logger');
 
 const app = express();
 
@@ -10,21 +10,21 @@ app.use(require('./routes/index'));
 app.set('view engine', 'hbs');
 
 app.listen(process.env.PORT, '0.0.0.0', () => {
-    console.log(`Listening port ${process.env.PORT}!`);
+    logger.info(`Listening port ${process.env.PORT}!`);
 
     db.connect()
-        .then(() => { console.log("Connected to Database."); })
-        .catch((err) => { console.error(err.message); })
+        .then(() => { logger.info("Connected to Database."); })
+        .catch((err) => { logger.error(err.message, err); })
 });
 
 function handle(signal) {
-    console.log(`Received ${signal}`);
+    logger.info(`Received ${signal}`);
 
     db.disconnect()
-        .then(() => { console.log("Disconnected from Database."); })
-        .catch((err) => { console.error(err.message); })
+        .then(() => { logger.info("Disconnected from Database."); })
+        .catch((err) => { logger.error(err.message, err); })
         .finally(() => {
-            console.log("Leaving...");
+            logger.info("Leaving...");
             process.exit();
         });
 }

@@ -3,6 +3,7 @@ const hbs = require(__dirname + '/../hbs');
 const db = require(__dirname + '/../database');
 const navbar = require(__dirname + '/../config/navbar.json');
 const middlewares = require(__dirname + '/../middlewares');
+const logger = require('../logger');
 
 const app = express();
 
@@ -59,6 +60,7 @@ const projects = (req, res, find, sort, tag) => {
         })
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 };
 
@@ -85,6 +87,7 @@ app.get('/project/:name', (req, res) => {
         })
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
 
@@ -107,20 +110,26 @@ app.get('/project', middlewares.verifyToken, (req, res) => {
                 })
                 .finally(() => {
                     res.render(hbs.getView(params.current), getParams(params));
+                    logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
                 });
         })
         .catch((error) => {
             params = getError(error, params);
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
 
 app.post('/project', middlewares.verifyToken, (req, res) => {
     db.postProject(req.body)
-        .then((project) => { res.redirect(`/project/${project.name}`); })
+        .then((project) => {
+            res.redirect(`/project/${project.name}`);
+            logger.info(`${req.ip} has been created the new project ${project.name}.`);
+        })
         .catch((error) => {
             const params = getError(error, { title: 'Post project' });
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} failed creating a new project.`);
         });
 });
 
@@ -159,25 +168,32 @@ app.get('/project/:name/edit', middlewares.verifyToken, (req, res) => {
                         })
                         .finally(() => {
                             res.render(hbs.getView(params.current), getParams(params));
+                            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
                         });
                 })
                 .catch((error) => {
                     params = getError(error, params);
                     res.render(hbs.getView(params.current), getParams(params));
+                    logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
                 });
         })
         .catch((error) => {
             params = getError(error, params);
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
 
 app.post('/project/:name', middlewares.verifyToken, (req, res) => {
     db.updateProject(req.params.name, req.body)
-        .then((project) => { res.redirect(`/project/${project.name}`); })
+        .then((project) => {
+            res.redirect(`/project/${project.name}`);
+            logger.info(`${req.ip} has been updated project ${project.name}.`);
+        })
         .catch((error) => {
             const params = getError(error, { title: 'Update project' });
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} fails to update project ${req.params.name}.`);
         });
 });
 

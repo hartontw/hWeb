@@ -3,6 +3,7 @@ const hbs = require(__dirname + '/../hbs');
 const db = require(__dirname + '/../database');
 const navbar = require(__dirname + '/../config/navbar.json');
 const middlewares = require(__dirname + '/../middlewares');
+const logger = require('../logger');
 
 const app = express();
 
@@ -22,14 +23,19 @@ const getError = (error, params) => {
 
 app.get('/company', middlewares.verifyToken, (req, res) => {
     res.render(hbs.getView('companyEditor'), getParams({ title: 'New company', action: '/company' }));
+    logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
 });
 
 app.post('/company', middlewares.verifyToken, (req, res) => {
     db.postCompany(req.body)
-        .then((company) => { res.redirect('/admin'); })
+        .then((company) => {
+            res.redirect('/admin');
+            logger.info(`${req.ip} has been created the new company ${company.name}.`);
+        })
         .catch((error) => {
             const params = getError(error, { title: 'Post company' });
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} failed creating a new company.`);
         });
 });
 
@@ -49,15 +55,20 @@ app.get('/company/:name', middlewares.verifyToken, (req, res) => {
         })
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
 
 app.post('/company/:name', middlewares.verifyToken, (req, res) => {
     db.updateCompany(req.params.name, req.body)
-        .then((company) => { res.redirect('/admin'); })
+        .then((company) => {
+            res.redirect('/admin');
+            logger.info(`${req.ip} has been updated the company ${company.name}.`);
+        })
         .catch((error) => {
             const params = getError(error, { title: 'Update company' });
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} failed updating the company ${req.params.name}.`);
         });
 });
 

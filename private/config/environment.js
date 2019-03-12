@@ -1,8 +1,16 @@
+const package = require('../../package.json');
+
 ////////////////
 // CONNECTION //
 ////////////////
 process.env.PORT = process.env.PORT || 3000;
 process.env.PASS = process.env.PASS || "debug";
+
+////////////
+// LOGGER //
+////////////
+process.env.LOGGER_PATH = process.env.LOGGER_PATH || '';
+process.env.LOGGER_FILE = process.env.LOGGER_FILE || process.env.npm_package_name || `${package.name}.log`;
 
 ///////////
 // MONGO //

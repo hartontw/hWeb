@@ -1,6 +1,6 @@
 {
     "name": "hweb",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "hartontw web site",
     "main": "index.js",
     "scripts": {
@@ -20,7 +20,9 @@
         "jsonwebtoken": "^8.4.0",
         "mongoose": "^5.4.13",
         "mongoose-unique-validator": "^2.0.2",
-        "popper.js": "^1.14.7"
+        "popper.js": "^1.14.7",
+        "winston": "^3.2.1",
+        "winston-mongodb": "^4.0.3"
     },
     "devDependencies": {},
     "repository": {

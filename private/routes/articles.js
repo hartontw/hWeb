@@ -3,6 +3,7 @@ const hbs = require(__dirname + '/../hbs');
 const db = require(__dirname + '/../database');
 const navbar = require(__dirname + '/../config/navbar.json');
 const middlewares = require(__dirname + '/../middlewares');
+const logger = require('../logger');
 
 const app = express();
 
@@ -51,6 +52,7 @@ const home = (req, res, find, sort, tag) => {
         })
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 }
 
@@ -84,19 +86,25 @@ app.get('/article/:title', (req, res) => {
         })
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
 
 app.get('/article', middlewares.verifyToken, (req, res) => {
     res.render(hbs.getView('articleEditor'), getParams({ title: 'New article', action: '/article' }));
+    logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
 });
 
 app.post('/article', middlewares.verifyToken, (req, res) => {
     db.postArticle(req.body)
-        .then((article) => { res.redirect(`/article/${article.title}`); })
+        .then((article) => {
+            res.redirect(`/article/${article.title}`);
+            logger.info(`${req.ip} has been created the new article ${article.name}.`);
+        })
         .catch((error) => {
             const params = getError(error, { title: 'Post article' });
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} failed creating new article.`);
         });
 });
 
@@ -122,15 +130,20 @@ app.get('/article/:title/edit', middlewares.verifyToken, (req, res) => {
         })
         .finally(() => {
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
 
 app.post('/article/:title', middlewares.verifyToken, (req, res) => {
     db.updateArticle(req.params.title, req.body)
-        .then((article) => { res.redirect(`/article/${article.title}`); })
+        .then((article) => {
+            res.redirect(`/article/${article.title}`);
+            logger.info(`${req.ip} has been updated the article ${article.title}.`);
+        })
         .catch((error) => {
             const params = getError(error, { title: 'Post article' });
             res.render(hbs.getView(params.current), getParams(params));
+            logger.info(`${req.ip} failed updating the article ${req.params.title}.`);
         });
 });
 

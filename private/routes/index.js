@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const navbar = require(__dirname + '/../config/navbar.json');
+const logger = require('../logger');
 
 const app = express();
 
@@ -36,6 +37,9 @@ app.get('/*', (req, res) => {
     };
 
     res.render(process.env.ROOT + '/private/views/error.hbs', params);
+
+    if (!req.originalUrl.includes('/favicon.ico') && !req.originalUrl.includes('/assets'))
+        logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl}.`);
 });
 
 module.exports = app;

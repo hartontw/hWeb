@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
 const axios = require('axios')
+const logger = require('./logger');
 
 const Article = require(process.env.ROOT + '/private/models/article');
 const Project = require(process.env.ROOT + '/private/models/project');
@@ -25,27 +26,27 @@ const connection_options = (user) => {
 };
 
 mongoose.connection.on('connecting', function() {
-    console.log('MongoDB event connecting');
+    logger.info('MongoDB event connecting');
 });
 
 mongoose.connection.on('connected', function() {
-    console.log('MongoDB event connected');
+    logger.info('MongoDB event connected');
 });
 
 mongoose.connection.on('disconnecting', function() {
-    console.log('MongoDB event disconnecting');
+    logger.info('MongoDB event disconnecting');
 });
 
 mongoose.connection.on('disconnected', function() {
-    console.log('MongoDB event disconnected');
+    logger.info('MongoDB event disconnected');
 });
 
 mongoose.connection.on('reconnected', function() {
-    console.log('MongoDB event reconnected');
+    logger.info('MongoDB event reconnected');
 });
 
 mongoose.connection.on('error', function(err) {
-    console.error('MongoDB event error: ' + err);
+    logger.error('MongoDB event error: ' + err, err);
 });
 
 async function downloadImage(image) {
