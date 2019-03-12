@@ -3,9 +3,11 @@ require('./config/environment');
 const express = require('express');
 const db = require('./database');
 const logger = require('./logger');
+const favicon = require('serve-favicon')
 
 const app = express();
 
+app.use(favicon('./public/assets/favicon.ico'));
 app.use(require('./routes/index'));
 app.set('view engine', 'hbs');
 

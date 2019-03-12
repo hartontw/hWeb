@@ -1,6 +1,6 @@
 {
     "name": "hweb",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "hartontw web site",
     "main": "index.js",
     "scripts": {
@@ -21,6 +21,7 @@
         "mongoose": "^5.4.13",
         "mongoose-unique-validator": "^2.0.2",
         "popper.js": "^1.14.7",
+        "serve-favicon": "^2.5.0",
         "winston": "^3.2.1",
         "winston-mongodb": "^4.0.3"
     },
