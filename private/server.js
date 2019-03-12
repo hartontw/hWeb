@@ -27,7 +27,7 @@ function handle(signal) {
         .catch((err) => { logger.error(err.message, err); })
         .finally(() => {
             logger.info("Leaving...");
-            process.exit();
+            process.exit(0);
         });
 }
 
