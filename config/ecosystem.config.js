@@ -2,7 +2,8 @@
 module.exports = {
     apps: [{
         name: "hWeb",
-        script: "./src/index.js",
+        cwd: "/",
+        script: "server.js",
         watch: true,
         autorestart: true,
         env: {
