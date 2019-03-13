@@ -4,11 +4,23 @@ const express = require('express');
 const db = require('./database');
 const logger = require('./logger');
 const favicon = require('serve-favicon')
+const path = require('path');
+const hbs = require('./config/hbs');
+
+hbs.registerPartials(__dirname + '/views/partials');
 
 const app = express();
 
-app.use(favicon('./public/assets/favicon.ico'));
+app.use(express.static('public'));
+app.use('/assets', express.static('node_modules/bootstrap/dist/'));
+app.use('/assets/js', [
+    express.static('node_modules/jquery/dist/'),
+    express.static('node_modules/popper.js/dist/')
+]);
+
+app.use(favicon(__dirname + '/public/assets/favicon.ico'));
 app.use(require('./routes/index'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 app.listen(process.env.PORT, '0.0.0.0', () => {

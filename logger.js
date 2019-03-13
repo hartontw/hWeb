@@ -1,4 +1,4 @@
-const { createLogger, format, transports, loggers } = require('winston');
+const { createLogger, format, transports } = require('winston');
 require('winston-mongodb');
 
 const basicFormat = format.combine(

@@ -1,8 +1,8 @@
 const express = require('express');
+const path = require('path');
 const jwt = require('jsonwebtoken');
-const hbs = require(__dirname + '/../hbs');
-const navbar = require(__dirname + '/../config/navbar.json');
-const middlewares = require(__dirname + '/../middlewares');
+const navbar = require(path.join(__dirname, '/../config/navbar.json'));
+const middlewares = require('./middlewares');
 const logger = require('../logger');
 
 const app = express();
@@ -18,7 +18,7 @@ app.get('/admin', middlewares.verifyToken, (req, res) => {
         styles: navbar.styles,
         scripts: navbar.scripts
     };
-    res.render(hbs.getView('admin'), params);
+    res.render('admin', params);
     logger.warn(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
 });
 
@@ -30,7 +30,7 @@ app.get('/login', (req, res) => {
         styles: navbar.styles,
         scripts: navbar.scripts
     };
-    res.render(hbs.getView('login'), params);
+    res.render('login', params);
     logger.warn(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
 });
 

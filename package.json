@@ -1,10 +1,10 @@
 {
     "name": "hweb",
-    "version": "0.1.3",
-    "description": "hartontw web site",
-    "main": "index.js",
+    "version": "0.2.0",
+    "description": "Daniel Harton web site",
+    "main": "server.js",
     "scripts": {
-        "start": "node index.js"
+        "start": "node server.js"
     },
     "author": "Daniel Martínez Priego",
     "license": "ISC",

@@ -1,9 +1,9 @@
 const express = require('express');
-const hbs = require(__dirname + '/../hbs');
-const db = require(__dirname + '/../database');
-const navbar = require(__dirname + '/../config/navbar.json');
-const middlewares = require(__dirname + '/../middlewares');
-const logger = require('../logger');
+const path = require('path');
+const db = require(path.join(__dirname, '/../database'));
+const navbar = require(path.join(__dirname, '/../config/navbar.json'));
+const middlewares = require('./middlewares');
+const logger = require(path.join(__dirname, '../logger'));
 
 const app = express();
 
@@ -22,7 +22,7 @@ const getError = (error, params) => {
 }
 
 app.get('/colaborator', middlewares.verifyToken, (req, res) => {
-    res.render(hbs.getView('colaboratorEditor'), getParams({ title: 'New colaborator', action: '/colaborator' }));
+    res.render('colaboratorEditor', getParams({ title: 'New colaborator', action: '/colaborator' }));
     logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
 });
 
@@ -34,7 +34,7 @@ app.post('/colaborator', middlewares.verifyToken, (req, res) => {
         })
         .catch((error) => {
             const params = getError(error, { title: 'Post colaborator' });
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} failed creating new colaborator.`);
         });
 });
@@ -54,7 +54,7 @@ app.get('/colaborator/:name', middlewares.verifyToken, (req, res) => {
             params = getError(error, params);
         })
         .finally(() => {
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
@@ -67,7 +67,7 @@ app.post('/colaborator/:name', middlewares.verifyToken, (req, res) => {
         })
         .catch((error) => {
             const params = getError(error, { title: 'Update colaborator' });
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} failed updating the colaborator ${req.params.name}.`);
         });
 });

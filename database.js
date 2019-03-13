@@ -3,12 +3,12 @@ const fs = require('fs');
 const axios = require('axios')
 const logger = require('./logger');
 
-const Article = require(process.env.ROOT + '/private/models/article');
-const Project = require(process.env.ROOT + '/private/models/project');
-const Tag = require(process.env.ROOT + '/private/models/tag');
-const Image = require(process.env.ROOT + '/private/models/image');
-const Company = require(process.env.ROOT + '/private/models/company');
-const Colaborator = require(process.env.ROOT + '/private/models/colaborator');
+const Article = require('./models/article');
+const Project = require('./models/project');
+const Tag = require('./models/tag');
+const Image = require('./models/image');
+const Company = require('./models/company');
+const Colaborator = require('./models/colaborator');
 
 //mongoose.Promise = Promise;
 

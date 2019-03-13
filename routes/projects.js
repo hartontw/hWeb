@@ -1,8 +1,8 @@
 const express = require('express');
-const hbs = require(__dirname + '/../hbs');
-const db = require(__dirname + '/../database');
-const navbar = require(__dirname + '/../config/navbar.json');
-const middlewares = require(__dirname + '/../middlewares');
+const path = require('path');
+const db = require(path.join(__dirname, '/../database'));
+const navbar = require(path.join(__dirname, '/../config/navbar.json'));
+const middlewares = require('./middlewares');
 const logger = require('../logger');
 
 const app = express();
@@ -59,7 +59,7 @@ const projects = (req, res, find, sort, tag) => {
             params = getError(error, params);
         })
         .finally(() => {
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 };
@@ -86,7 +86,7 @@ app.get('/project/:name', (req, res) => {
             params = getError(error, params);
         })
         .finally(() => {
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
@@ -109,13 +109,13 @@ app.get('/project', middlewares.verifyToken, (req, res) => {
                     params = getError(error, params);
                 })
                 .finally(() => {
-                    res.render(hbs.getView(params.current), getParams(params));
+                    res.render(params.current, getParams(params));
                     logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
                 });
         })
         .catch((error) => {
             params = getError(error, params);
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
@@ -128,7 +128,7 @@ app.post('/project', middlewares.verifyToken, (req, res) => {
         })
         .catch((error) => {
             const params = getError(error, { title: 'Post project' });
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} failed creating a new project.`);
         });
 });
@@ -167,19 +167,19 @@ app.get('/project/:name/edit', middlewares.verifyToken, (req, res) => {
                             params = getError(error, params);
                         })
                         .finally(() => {
-                            res.render(hbs.getView(params.current), getParams(params));
+                            res.render(params.current, getParams(params));
                             logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
                         });
                 })
                 .catch((error) => {
                     params = getError(error, params);
-                    res.render(hbs.getView(params.current), getParams(params));
+                    res.render(params.current, getParams(params));
                     logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
                 });
         })
         .catch((error) => {
             params = getError(error, params);
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} accesing to ${req.hostname}${req.originalUrl} redirected to ${params.current}.`);
         });
 });
@@ -192,7 +192,7 @@ app.post('/project/:name', middlewares.verifyToken, (req, res) => {
         })
         .catch((error) => {
             const params = getError(error, { title: 'Update project' });
-            res.render(hbs.getView(params.current), getParams(params));
+            res.render(params.current, getParams(params));
             logger.info(`${req.ip} fails to update project ${req.params.name}.`);
         });
 });
