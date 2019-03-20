@@ -8,7 +8,7 @@ process.env.PASS = process.env.PASS || "debug";
 // LOGGER //
 ////////////
 process.env.LOGGER_PATH = process.env.LOGGER_PATH || '';
-process.env.LOGGER_FILE = process.env.LOGGER_FILE || process.env.npm_package_name || `hWeb.log`;
+process.env.LOGGER_FILE = process.env.LOGGER_FILE || process.env.npm_package_name || `hWeb`;
 
 ///////////
 // MONGO //

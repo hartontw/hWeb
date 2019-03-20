@@ -20,7 +20,7 @@ var options = {
         )
     },
     file: {
-        filename: process.env.LOGGER_PATH + process.env.LOGGER_FILE,
+        filename: process.env.LOGGER_PATH + process.env.LOGGER_FILE + '.log',
         level: 'debug',
         format: basicFormat,
         maxsize: 5120000,

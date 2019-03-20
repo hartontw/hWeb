@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Daniel Harton | {{ title }} </title>
+    {{> styles }}
+</head>
+
+<body>
+
+{{> navbar}}
+
+<img src="/assets/images/{{entry.image}}"><br/>
+{{entry.name}}<br/>
+{{entry.status}}<br/>
+{{entry.description}}<br/>
+{{entry.players}} / {{entry.maxPlayers}}
+
+{{> scripts }}
+
+{{> footer }}
+
+</body>
+</html>
