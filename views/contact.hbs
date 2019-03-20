@@ -142,16 +142,20 @@
 
         let linkedin = CreateLinkedMesh(20, 'assets/textures/linkedin.jpg', 'https://www.linkedin.com/in/harton/');
         let github = CreateLinkedMesh(20, 'assets/textures/github.png', 'https://github.com/hartontw');
+        let gitlab = CreateLinkedMesh(20, 'assets/textures/gitlab.png', 'https://gitlab.com/hartontw');
 
         refreshCubes();
 
         function refreshCubes()
         {
-            linkedin.position.x = Math.min(-25 * camera.aspect, -5);
-            github.position.x = Math.max(25 * camera.aspect, 5);
-            //const scale = Math.min(camera.aspect, 1) * 1;
-            //linkedin.scale.set(scale, scale, scale);
-            //github.scale.set(scale, scale, scale);
+            gitlab.position.x = Math.min(-30 * camera.aspect, -5);
+            linkedin.position.x = 0;
+            github.position.x = Math.max(30 * camera.aspect, 5);
+
+            const scale = Math.min(camera.aspect, 1);
+            linkedin.scale.set(scale, scale, scale);
+            github.scale.set(scale, scale, scale);
+            gitlab.scale.set(scale, scale, scale);            
         }
 
         function onDocumentMouseDown(event)
@@ -166,7 +170,7 @@
 
             raycaster.setFromCamera(mouse, camera);
 
-            meshObjects = [ linkedin, github ];
+            meshObjects = [ gitlab, linkedin, github ];
 
             let intersects = raycaster.intersectObjects(meshObjects);
 
@@ -205,6 +209,12 @@
                 var t = time + 2.2;
                 github.position.y = Math.sin(t * 0.5) * 2 + 13;
                 github.rotation.y = t * 0.2;
+            }
+            if (gitlab !== undefined)
+            {
+                var t = time + 3.3;
+                gitlab.position.y = Math.sin(t * 0.5) * 2 + 13;
+                gitlab.rotation.y = t * 0.2;
             }
 
             water.material.uniforms[ "time" ].value += 1.0 / 60.0;
